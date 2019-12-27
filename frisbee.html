@@ -1,0 +1,145 @@
+<html>
+
+<head>
+  <script src="https://aframe.io/releases/1.0.2/aframe.min.js"></script>
+  <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.1/dist/aframe-extras.min.js"></script>
+  <script>
+    $ = (sel) => document.querySelector(sel)
+    $$ = (sel) => document.querySelectorAll(sel)
+    on = (elem, type, hand) => elem.addEventListener(type, hand)
+
+    AFRAME.registerComponent('frisbee', {
+      init() {
+        this.liftForce = new CANNON.Vec3();
+        this.airFrictionForce = new CANNON.Vec3();
+        this.discUpNormal = new CANNON.Vec3();
+        this.center = new CANNON.Vec3();
+      },
+
+      tick() {
+        if (!this.el.body) return;
+
+        this.discUpNormal.set(0, 1, 0);
+
+        this.el.body.quaternion.vmult(this.discUpNormal, this.discUpNormal);
+
+        const velocityMagnitude = this.el.body.velocity.length();
+
+        const airFrictionMagnitude = -0.05 * velocityMagnitude ** 2;
+
+        this.airFrictionForce.copy(this.el.body.velocity);
+        this.airFrictionForce.normalize();
+        this.airFrictionForce.scale(airFrictionMagnitude, this.airFrictionForce);
+
+        const liftDot = this.discUpNormal.dot(this.el.body.velocity);
+        const liftMagnitude = -20 * liftDot;
+
+        this.liftForce.copy(this.discUpNormal);
+        this.liftForce.scale(liftMagnitude, this.liftForce);
+
+        this.el.body.applyForce(this.liftForce, this.center);
+        this.el.body.applyForce(this.airFrictionForce, this.center);
+      }
+
+    });
+
+    AFRAME.registerComponent('frisbee-thrower', {
+      init() {
+        this.didThrow = false;
+        this.shouldThrow = false;
+        this.throwerPosition = new THREE.Vector3();
+        this.frisbeeOrientation = new THREE.Quaternion();
+
+        window.addEventListener('keydown', ({ key }) => {
+          if (key === ' ') {
+            this.shouldThrow = true;
+          }
+          if (key === 'r') {
+            this.shouldThrow = false;
+            this.didThrow = false;
+
+            this.frisbeeOrientation.z = 0;
+            this.frisbeeOrientation.x = 0;
+          }
+          if (key === 'i') {
+            this.frisbeeOrientation.x -= 0.1;
+          }
+          if (key === 'k') {
+            this.frisbeeOrientation.x += 0.1;
+          }
+          if (key === 'j') {
+            this.frisbeeOrientation.z += 0.1;
+          }
+          if (key === 'l') {
+            this.frisbeeOrientation.z -= 0.1;
+          }
+        });
+      },
+
+      tick() {
+        if (this.didThrow) return;
+        const { body } = $('#disc');
+        if (!body) return;
+
+        const pos = this.throwerPosition;
+
+        const cam = this.el.object3D;
+        cam.getWorldPosition(pos);
+
+        const dist = 2;
+        const x = -Math.sin(cam.rotation.y) * dist;
+        const y = Math.sin(cam.rotation.x) * dist;
+        const z = -Math.cos(cam.rotation.y) * dist;
+
+        const toDisc = new CANNON.Vec3(x, y, z);
+        const discPos = new CANNON.Vec3(pos.x, pos.y, pos.z);
+
+        discPos.x += toDisc.x;
+        discPos.y += toDisc.y - 0.3;
+        discPos.z += toDisc.z;
+
+        if (this.shouldThrow) {
+          this.didThrow = true;
+          const velocity = new CANNON.Vec3(x, y, z);
+          velocity.normalize();
+          velocity.scale(14, velocity);
+
+          body.velocity.x = velocity.x;
+          body.velocity.y = velocity.y;
+          body.velocity.z = velocity.z;
+        } else {
+          body.position.set(discPos.x, discPos.y, discPos.z);
+          body.velocity.setZero();
+          body.quaternion.copy(cam.quaternion);
+          body.quaternion.mult(this.frisbeeOrientation, body.quaternion);
+          // body.quaternion.setFromAxisAngle(toDisc, 0.0);
+
+          body.angularVelocity.setZero();
+        }
+      }
+
+    });</script>
+</head>
+
+<body>
+  <a-scene fog physics="debug:true;">
+    <a-cylinder id="disc" radius="0.2" height="0.03" position="0.3 2 -4" material="color: #f80;" dynamic-body frisbee>
+    </a-cylinder>
+
+    <a-entity id="rig" movement-controls kinematic-body="radius: 0.2;" position="0 0.5 0">
+      <a-entity id="camera" camera frisbee-thrower look-controls="pointerLockEnabled: true" position="0 1.6 0">
+      </a-entity>
+    </a-entity>
+
+
+
+
+    <a-box width="100" height="1" depth="100" position="0 -1 0" material="color: green" static-body></a-box>
+    <a-box width="1" height="3" depth="1" position="5 0 3" material="color: #222" static-body></a-box>
+    <a-box width="1" height="10" depth="1" position="5 0 3" material="color: #222" static-body></a-box>
+    <a-box width="1" height="3" depth="1" position="-2 0 -1" material="color: #222" static-body></a-box>
+  </a-scene>
+</body>
+
+</html>
