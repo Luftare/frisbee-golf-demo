@@ -15,6 +15,10 @@
         this.airFrictionForce = new CANNON.Vec3();
         this.discUpNormal = new CANNON.Vec3();
         this.center = new CANNON.Vec3();
+
+        this.frisbeeTurn = new THREE.Quaternion();
+
+        this.frisbeeTurn.z = 0.01;
       },
 
       tick() {
@@ -40,6 +44,14 @@
 
         this.el.body.applyForce(this.liftForce, this.center);
         this.el.body.applyForce(this.airFrictionForce, this.center);
+
+        if (velocityMagnitude > 12) {
+          this.frisbeeTurn.z = -0.0005;
+        } else {
+          this.frisbeeTurn.z = 0.002;
+        }
+
+        this.el.body.quaternion.mult(this.frisbeeTurn, this.el.body.quaternion);
       }
 
     });
@@ -113,8 +125,6 @@
           body.velocity.setZero();
           body.quaternion.copy(cam.quaternion);
           body.quaternion.mult(this.frisbeeOrientation, body.quaternion);
-          // body.quaternion.setFromAxisAngle(toDisc, 0.0);
-
           body.angularVelocity.setZero();
         }
       }
@@ -127,11 +137,14 @@
     <a-cylinder id="disc" radius="0.2" height="0.03" position="0.3 2 -4" material="color: #f80;" dynamic-body frisbee>
     </a-cylinder>
 
-    <a-entity id="rig" movement-controls kinematic-body="radius: 0.2;" position="0 0.5 0">
+    <a-entity id="rig" movement-controls kinematic-body="radius: 0.7;" position="0 0.5 0">
       <a-entity id="camera" camera frisbee-thrower look-controls="pointerLockEnabled: true" position="0 1.6 0">
       </a-entity>
     </a-entity>
 
+    <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 0.5 -5" static-body></a-cylinder>
+    <a-cylinder radius="0.4" height="0.7" material="color: #888;" position="0 1 -5" static-body></a-cylinder>
+    <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 1.25 -5" static-body></a-cylinder>
 
 
 
