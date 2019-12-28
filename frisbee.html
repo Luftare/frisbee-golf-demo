@@ -32,6 +32,10 @@
     }
 
     AFRAME.registerComponent('frisbee', {
+      schema: {
+        inBasket: { default: false }
+      },
+
       init() {
         this.liftForce = new CANNON.Vec3();
         this.airFrictionForce = new CANNON.Vec3();
@@ -42,9 +46,21 @@
         this.frisbeeTurn.z = 0.0;
 
         this.isDamped = false;
+        this.discInBasketCheckScheduled = false;
 
         this.el.addEventListener('inside-trigger-zone', (e) => {
           this.isDamped = true;
+
+          const shouldTestIfDiscIsInBasket = !this.data.inBasket && !this.discInBasketCheckScheduled;
+
+          if (shouldTestIfDiscIsInBasket) {
+            this.discInBasketCheckScheduled = true;
+
+            setTimeout(() => {
+              this.data.inBasket = this.isDamped;
+              this.discInBasketCheckScheduled = false;
+            }, 1000);
+          }
         });
       },
 
@@ -93,9 +109,18 @@
         this.shouldThrow = false;
         this.throwerPosition = new THREE.Vector3();
         this.frisbeeOrientation = new THREE.Quaternion();
+        this.adjustingFrisbeeOrientation = false;
+
+        window.addEventListener('mousemove', (e) => {
+          if (this.adjustingFrisbeeOrientation) {
+            this.frisbeeOrientation.x += e.movementY * 0.001;
+            this.frisbeeOrientation.z -= e.movementX * 0.001;
+          }
+        });
 
         window.addEventListener('keydown', ({ key }) => {
           if (key === ' ') {
+            $('[frisbee]').setAttribute('frisbee', 'inBasket', false);
             this.shouldThrow = true;
           }
           if (key === 'r') {
@@ -116,6 +141,26 @@
           }
           if (key === 'l') {
             this.frisbeeOrientation.z -= 0.1;
+          }
+
+          if (key === 'e') {
+            const el = $('[look-controls]');
+
+            if (el) {
+              el.setAttribute('look-controls', 'enabled', false);
+            }
+
+            this.adjustingFrisbeeOrientation = true;
+          }
+        });
+
+        window.addEventListener('keyup', ({ key }) => {
+          if (key === 'e') {
+            this.adjustingFrisbeeOrientation = false;
+            const el = $('[look-controls]');
+            if (el) {
+              el.setAttribute('look-controls', 'enabled', true);
+            }
           }
         });
       },
@@ -176,7 +221,7 @@
 
     <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 0.5 -5" static-body></a-cylinder>
     <a-cylinder radius="0.05" height="1.3" material="color: #777;" position="0 0.5 -5" static-body></a-cylinder>
-    <a-cylinder radius="0.4" height="0.7" material="color: #888; opacity: 0.8; transparent: true;" position="0 1 -5"
+    <a-cylinder radius="0.4" height="0.7" material="color: #888; opacity: 0.8; transparent: true;" position="0 0.9 -5"
       trigger-cylinder="selector: #disc">
     </a-cylinder>
     <a-cylinder radius="0.5" height="0.2" material="color: #DD3;" position="0 1.25 -5" static-body></a-cylinder>
