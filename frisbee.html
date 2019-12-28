@@ -4,10 +4,32 @@
   <script src="https://aframe.io/releases/1.0.2/aframe.min.js"></script>
   <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.1/dist/aframe-extras.min.js"></script>
+  <script src="trigger-cylinder.js"></script>
   <script>
     $ = (sel) => document.querySelector(sel)
     $$ = (sel) => document.querySelectorAll(sel)
     on = (elem, type, hand) => elem.addEventListener(type, hand)
+
+    const currentDisc = {
+      speed: 9,// not in use
+      glide: 4,
+      turn: -1,
+      fade: 2,
+    };
+
+    function forEach(arr, fn) {
+      for (let index = 0; index < arr.length; index++) {
+        fn(arr[index], index, arr);
+      }
+    }
+
+    function map(arr, fn) {
+      const res = [];
+      for (let index = 0; index < arr.length; index++) {
+        res.push(fn(arr[index], index, arr));
+      }
+      return res;
+    }
 
     AFRAME.registerComponent('frisbee', {
       init() {
@@ -17,8 +39,13 @@
         this.center = new CANNON.Vec3();
 
         this.frisbeeTurn = new THREE.Quaternion();
+        this.frisbeeTurn.z = 0.0;
 
-        this.frisbeeTurn.z = 0.01;
+        this.isDamped = false;
+
+        this.el.addEventListener('inside-trigger-zone', (e) => {
+          this.isDamped = true;
+        });
       },
 
       tick() {
@@ -29,7 +56,6 @@
         this.el.body.quaternion.vmult(this.discUpNormal, this.discUpNormal);
 
         const velocityMagnitude = this.el.body.velocity.length();
-
         const airFrictionMagnitude = -0.05 * velocityMagnitude ** 2;
 
         this.airFrictionForce.copy(this.el.body.velocity);
@@ -37,7 +63,7 @@
         this.airFrictionForce.scale(airFrictionMagnitude, this.airFrictionForce);
 
         const liftDot = this.discUpNormal.dot(this.el.body.velocity);
-        const liftMagnitude = -20 * liftDot;
+        const liftMagnitude = -5 * currentDisc.glide * liftDot;
 
         this.liftForce.copy(this.discUpNormal);
         this.liftForce.scale(liftMagnitude, this.liftForce);
@@ -45,13 +71,18 @@
         this.el.body.applyForce(this.liftForce, this.center);
         this.el.body.applyForce(this.airFrictionForce, this.center);
 
-        if (velocityMagnitude > 12) {
-          this.frisbeeTurn.z = -0.0005;
-        } else {
-          this.frisbeeTurn.z = 0.002;
+        if (velocityMagnitude > 2) {
+          this.frisbeeTurn.z = ((currentDisc.fade / 2) + 0.09 * velocityMagnitude * (currentDisc.turn)) * 0.002;
+        }
+
+        if (this.isDamped) {
+          this.el.body.velocity.x *= 0.3;
+          this.el.body.velocity.z *= 0.3;
         }
 
         this.el.body.quaternion.mult(this.frisbeeTurn, this.el.body.quaternion);
+
+        this.isDamped = false;
       }
 
     });
@@ -133,18 +164,22 @@
 </head>
 
 <body>
-  <a-scene fog physics="debug:true;">
+  <a-scene fog physics="debug:false;">
     <a-cylinder id="disc" radius="0.2" height="0.03" position="0.3 2 -4" material="color: #f80;" dynamic-body frisbee>
     </a-cylinder>
 
     <a-entity id="rig" movement-controls kinematic-body="radius: 0.7;" position="0 0.5 0">
-      <a-entity id="camera" camera frisbee-thrower look-controls="pointerLockEnabled: true" position="0 1.6 0">
+      <a-entity id="camera" camera="fov:60;" frisbee-thrower look-controls="pointerLockEnabled: true"
+        position="0 1.6 0">
       </a-entity>
     </a-entity>
 
     <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 0.5 -5" static-body></a-cylinder>
-    <a-cylinder radius="0.4" height="0.7" material="color: #888;" position="0 1 -5" static-body></a-cylinder>
-    <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 1.25 -5" static-body></a-cylinder>
+    <a-cylinder radius="0.05" height="1.3" material="color: #777;" position="0 0.5 -5" static-body></a-cylinder>
+    <a-cylinder radius="0.4" height="0.7" material="color: #888; opacity: 0.8; transparent: true;" position="0 1 -5"
+      trigger-cylinder="selector: #disc">
+    </a-cylinder>
+    <a-cylinder radius="0.5" height="0.2" material="color: #DD3;" position="0 1.25 -5" static-body></a-cylinder>
 
 
 
