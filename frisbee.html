@@ -5,291 +5,31 @@
   <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.1/dist/aframe-extras.min.js"></script>
   <script src="trigger-cylinder.js"></script>
-  <script>
-    $ = (sel) => document.querySelector(sel)
-    $$ = (sel) => document.querySelectorAll(sel)
-    on = (elem, type, hand) => elem.addEventListener(type, hand)
-
-    const currentDisc = {
-      speed: 9,// not in use
-      glide: 4,
-      turn: -1,
-      fade: 2,
-    };
-
-    function forEach(arr, fn) {
-      for (let index = 0; index < arr.length; index++) {
-        fn(arr[index], index, arr);
-      }
-    }
-
-    function map(arr, fn) {
-      const res = [];
-      for (let index = 0; index < arr.length; index++) {
-        res.push(fn(arr[index], index, arr));
-      }
-      return res;
-    }
-
-    AFRAME.registerComponent('frisbee', {
-      schema: {
-        inBasket: { default: false },
-        isLanded: { default: false },
-        didThrow: { default: false },
-        maxFlightTime: { default: 7000 },
-      },
-
-      init() {
-        this.liftForce = new CANNON.Vec3();
-        this.airFrictionForce = new CANNON.Vec3();
-        this.discUpNormal = new CANNON.Vec3();
-        this.center = new CANNON.Vec3();
-
-        this.frisbeeTurn = new THREE.Quaternion();
-
-        this.isDamped = false;
-        this.discInBasketCheckScheduled = false;
-        this.landingTimerId;
-
-        this.el.addEventListener('throw', (e) => {
-          this.el.body.angularFactor.set(0.5, 1, 0.5)
-          this.handleThrow();
-        });
-
-        this.el.addEventListener('pick-up', () => {
-          this.handlePickUp();
-        });
-
-        this.el.addEventListener('inside-trigger-zone', (e) => {
-          this.handleInsideZone();
-        });
-      },
-
-      handleThrow() {
-        this.data.didThrow = true;
-        this.data.isLanded = false;
-
-        $('#arrow').setAttribute('visible', false);
-        clearTimeout(this.landingTimerId);
-
-        this.landingTimerId = setTimeout(() => {
-          this.handleLanded();
-        }, this.data.maxFlightTime);
-      },
-
-      handlePickUp() {
-        this.data.isLanded = false;
-        this.data.didThrow = false;
-        this.data.inBasket = false;
-
-        this.el.setAttribute('visible', true);
-      },
-
-      handleInsideZone() {
-        this.isDamped = true;
-
-        const shouldTestIfDiscIsInBasket = !this.data.inBasket && !this.discInBasketCheckScheduled;
-
-        if (shouldTestIfDiscIsInBasket) {
-          this.discInBasketCheckScheduled = true;
-
-          setTimeout(() => {
-            this.data.inBasket = this.isDamped;
-            this.discInBasketCheckScheduled = false;
-
-            if (this.data.inBasket) {
-              this.handleFrisbeeInBasket();
-            }
-          }, 1000);
-        }
-      },
-
-      handleFrisbeeInBasket() {
-        clearTimeout(this.landingTimerId);
-        this.el.setAttribute('visible', true);
-      },
-
-      handleLanded() {
-        clearTimeout(this.landingTimerId);
-
-        if (this.data.isDamped) {
-          $('#arrow').setAttribute('visible', false);
-        } else {
-          $('#arrow').setAttribute('visible', true);
-          $('#arrow').setAttribute('position', { x: this.el.body.position.x, y: this.el.body.position.y + 4, z: this.el.body.position.z })
-          this.el.setAttribute('visible', false);
-        }
-      },
-
-      tick() {
-        if (!this.el.body) return;
-
-        this.discUpNormal.set(0, 1, 0);
-
-        this.el.body.quaternion.vmult(this.discUpNormal, this.discUpNormal);
-
-        const velocityMagnitude = this.el.body.velocity.length();
-        const airFrictionMagnitude = -0.05 * velocityMagnitude ** 2;
-
-        this.airFrictionForce.copy(this.el.body.velocity);
-        this.airFrictionForce.normalize();
-        this.airFrictionForce.scale(airFrictionMagnitude, this.airFrictionForce);
-
-        const liftDot = this.discUpNormal.dot(this.el.body.velocity);
-        const liftMagnitude = -5 * currentDisc.glide * liftDot;
-
-        this.liftForce.copy(this.discUpNormal);
-        this.liftForce.scale(liftMagnitude, this.liftForce);
-
-        const shouldTestIsLanded = this.data.didThrow && !this.data.isLanded;
-
-        if (shouldTestIsLanded) {
-          const restLimit = 0.2;
-          this.data.isLanded = velocityMagnitude < restLimit;
-
-          if (this.data.isLanded) {
-            this.handleLanded();
-          }
-        }
-
-        if (velocityMagnitude > 1) {
-          this.frisbeeTurn.z = ((currentDisc.fade / 2) + 0.09 * velocityMagnitude * (currentDisc.turn)) * 0.004;
-
-          this.el.body.quaternion.mult(this.frisbeeTurn, this.el.body.quaternion);
-
-          this.el.body.applyForce(this.liftForce, this.center);
-          this.el.body.applyForce(this.airFrictionForce, this.center);
-        }
-
-        if (this.isDamped) {
-          this.el.body.velocity.x *= 0.3;
-          this.el.body.velocity.z *= 0.3;
-        }
-
-        this.isDamped = false;
-      }
-    });
-
-    AFRAME.registerComponent('frisbee-thrower', {
-      dependencies: ['frisbee'],
-
-      init() {
-        this.didThrow = false;
-        this.shouldThrow = false;
-        this.throwerPosition = new THREE.Vector3();
-        this.frisbeeOrientation = new THREE.Quaternion();
-        this.adjustingFrisbeeOrientation = false;
-        this.frisbee = $('[frisbee]');
-
-        window.addEventListener('mousemove', (e) => {
-          if (this.adjustingFrisbeeOrientation) {
-            this.frisbeeOrientation.x += e.movementY * 0.001;
-            this.frisbeeOrientation.z -= e.movementX * 0.001;
-          }
-        });
-
-        window.addEventListener('keydown', ({ key }) => {
-          const num = parseInt(key);
-
-          const isNumber = !isNaN(num);
-          if (isNumber) {
-            console.log(num);
-          }
-
-          if (key === ' ') {
-            this.shouldThrow = true;
-            this.frisbee.dispatchEvent(new CustomEvent('throw'));
-          }
-          if (key === 'r') {
-            this.shouldThrow = false;
-            this.didThrow = false;
-
-            this.frisbeeOrientation.z = 0;
-            this.frisbeeOrientation.x = 0;
-            this.frisbee.dispatchEvent(new CustomEvent('pick-up'));
-          }
-          if (key === 'i') {
-            this.frisbeeOrientation.x -= 0.1;
-          }
-          if (key === 'k') {
-            this.frisbeeOrientation.x += 0.1;
-          }
-          if (key === 'j') {
-            this.frisbeeOrientation.z += 0.1;
-          }
-          if (key === 'l') {
-            this.frisbeeOrientation.z -= 0.1;
-          }
-
-          if (key === 'e') {
-            const el = $('[look-controls]');
-
-            if (el) {
-              el.setAttribute('look-controls', 'enabled', false);
-            }
-
-            this.adjustingFrisbeeOrientation = true;
-          }
-        });
-
-        window.addEventListener('keyup', ({ key }) => {
-          if (key === 'e') {
-            this.adjustingFrisbeeOrientation = false;
-            const el = $('[look-controls]');
-            if (el) {
-              el.setAttribute('look-controls', 'enabled', true);
-            }
-          }
-        });
-      },
-
-      tick() {
-        if (this.didThrow) return;
-        const { body } = $('#disc');
-        if (!body) return;
-
-        const pos = this.throwerPosition;
-
-        const cam = this.el.object3D;
-        cam.getWorldPosition(pos);
-
-        const dist = 2;
-        const x = -Math.sin(cam.rotation.y) * dist;
-        const y = Math.sin(cam.rotation.x) * dist;
-        const z = -Math.cos(cam.rotation.y) * dist;
-
-        const toDisc = new CANNON.Vec3(x, y, z);
-        const discPos = new CANNON.Vec3(pos.x, pos.y, pos.z);
-
-        discPos.x += toDisc.x;
-        discPos.y += toDisc.y - 0.3;
-        discPos.z += toDisc.z;
-
-        if (this.shouldThrow) {
-          this.didThrow = true;
-          const velocity = new CANNON.Vec3(x, y, z);
-          velocity.normalize();
-          velocity.scale(14, velocity);
-
-          body.velocity.x = velocity.x;
-          body.velocity.y = velocity.y;
-          body.velocity.z = velocity.z;
-        } else {
-          body.position.set(discPos.x, discPos.y, discPos.z);
-          body.velocity.setZero();
-          body.quaternion.copy(cam.quaternion);
-          body.quaternion.mult(this.frisbeeOrientation, body.quaternion);
-          body.angularVelocity.setZero();
-        }
-      }
-
-    });</script>
+  <script src="components.js"></script>
 </head>
 
 <body>
-  <a-scene fog="type: linear; color: #ccc; far: 70; near: 0" physics="debug:false;restitution:0.9;">
+  <a-scene fog="type: linear; color: #aaa; far: 70; near: 0" physics="debug:false; restitution:0.1; friction: 0.005;">
+    <a-assets>
+      <a-asset-item id="oak-model" src="assets/oak/scene.gltf"></a-asset-item>
+    </a-assets>
 
-    <a-cylinder id="disc" radius="0.2" height="0.03" position="0.3 2 -4" material="color: #f80" dynamic-body frisbee>
+    <a-entity position="-3 1 -14" rotation="0 40 0">
+      <a-entity gltf-model="#oak-model" scale="0.005 0.005 0.005" position="0 -0.3 0">
+      </a-entity>
+      <a-cylinder radius="1.7" height="2" material="color: #888; opacity: 0; transparent: true;" position="0 3.4 0"
+        trigger-cylinder="selector: [frisbee]"></a-cylinder>
+      <a-cylinder radius="0.3" height="7" material="color: #888; opacity: 0; transparent: true;" static-body>
+      </a-cylinder>
+    </a-entity>
+
+
+    <a-entity light="type: ambient; color: #ccc"></a-entity>
+    <a-entity light="type: directional; color: #fff; intensity: 0.5" position="-0.5 1 1"></a-entity>
+
+
+    <a-cylinder id="disc" radius="0.2" height="0.03" position="0.3 2 -4"
+      material="color: #f80; transparent: true; opacity: 1;" dynamic-body frisbee>
     </a-cylinder>
 
     <a-entity id="rig" movement-controls kinematic-body="radius: 0.7;" position="0 0.5 0">
@@ -298,27 +38,31 @@
       </a-entity>
     </a-entity>
 
-    <a-entity id="arrow" position="0 5 -7">
-      <a-entity geometry="primitive:cylinder;radius:0.1;height: 2;" material="color:red;"
-        animation="property: position; from: 0 0 0; to: 0 1 0; dur: 600; easing: linear; loop: true; dir: alternate;">
-        <a-cone radius-bottom="0.3" height="1" material="color:red;" rotation="180 0 0" position="0 -1.2 0"></a-cone>
+    <a-entity id="frisbee-marker" position="0 0 0">
+      <a-entity frisbee-marker-part geometry="primitive:cylinder;radius:0.1;height: 2;" material="color:yellow;"
+        animation="property: position; from: 0 4 0; to: 0 5 0; dur: 600; easing: linear; loop: true; dir: alternate;">
+        <a-cone frisbee-marker-part radius-bottom="0.3" height="1" material="color:yellow;" rotation="180 0 0"
+          position="0 -1.2 0">
+        </a-cone>
       </a-entity>
     </a-entity>
 
-    <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 0.5 -5" static-body></a-cylinder>
-    <a-cylinder radius="0.05" height="1.3" material="color: #777;" position="0 0.5 -5" static-body></a-cylinder>
-    <a-cylinder radius="0.4" height="0.7" material="color: #888; opacity: 0.8; transparent: true;" position="0 0.9 -5"
-      trigger-cylinder="selector: #disc">
-    </a-cylinder>
-    <a-cylinder radius="0.5" height="0.2" material="color: #DD3;" position="0 1.25 -5" static-body></a-cylinder>
+    <a-entity basket position="-10 0.3 -25">
+      <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 0.5 0" static-body></a-cylinder>
+      <a-cylinder radius="0.05" height="5.5" material="color: #777;" position="0 -1.5 0" static-body></a-cylinder>
+      <a-cylinder radius="0.4" height="0.7" material="color: #888; opacity: 0.8; transparent: true;" position="0 0.9 0"
+        trigger-cylinder="selector: [frisbee]">
+      </a-cylinder>
+      <a-cylinder radius="0.5" height="0.2" material="color: #DD3;" position="0 1.25 0" static-body></a-cylinder>
+    </a-entity>
 
-    <a-box width="100" height="1" depth="100" position="0 -1 0" material="color: green" static-body></a-box>
     <a-box width="1" height="3" depth="1" position="5 0 3" material="color: #222" static-body></a-box>
     <a-box width="1" height="10" depth="1" position="5 0 3" material="color: #222" static-body></a-box>
-    <a-box width="1" height="3" depth="1" position="-2 0 -1" material="color: #222" static-body></a-box>
+    <a-box width="1" height="3" depth="1" position="-3 0 -2" material="color: #222" static-body></a-box>
 
-    <a-sphere radius="50" position="0 -48 -20" static-body material="color: #383;"></a-sphere>
-    <a-entity geometry="primitive:sphere;radius:13;" material="color:#876" position="-20 -10 -15" static-body>
+    <a-box width="200" height="1" depth="200" position="0 -1 0" material="color: green;" static-body></a-box>
+    <a-sphere radius="50" position="3 -48 -20" static-body material="color: green;"></a-sphere>
+    <a-entity geometry="primitive:sphere;radius:13;" material="color:green;" position="-20 -10 -15" static-body>
     </a-entity>
   </a-scene>
 </body>

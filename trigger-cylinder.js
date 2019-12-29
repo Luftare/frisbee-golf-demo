@@ -31,12 +31,17 @@ AFRAME.registerComponent('trigger-cylinder', {
   },
 
   init() {
+    this.position = new THREE.Vector3();
     this.updateDimensions();
   },
 
   updateDimensions() {
     const { el } = this;
-    this.position = el.getAttribute('position');
+
+    setTimeout(() => {
+      el.object3D.localToWorld(this.position); // THIS IS A HACK
+    }, 1000);
+
     this.radius = parseFloat(el.getAttribute('radius'));
     this.height = parseFloat(el.getAttribute('height'));
     this.radiusSq = this.radius ** 2;

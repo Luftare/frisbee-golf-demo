@@ -1,0 +1,280 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 642,
+      "max": [
+        2.3967266082763672,
+        1.4909886121749878,
+        1.8582763671875
+      ],
+      "min": [
+        -1.0438892841339111,
+        -1.2723299264907837,
+        -4.2589035034179688
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 7704,
+      "componentType": 5126,
+      "count": 642,
+      "max": [
+        0.99788439273834229,
+        0.97539824247360229,
+        0.95628088712692261
+      ],
+      "min": [
+        -0.99915444850921631,
+        -0.99851518869400024,
+        -1
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 642,
+      "max": [
+        0.98523753881454468,
+        0.97498869895935059,
+        0.98490864038467407,
+        1
+      ],
+      "min": [
+        -0.99652731418609619,
+        -0.9988478422164917,
+        -0.93647474050521851,
+        1
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 642,
+      "max": [
+        0.933307945728302,
+        0.42397740483283997
+      ],
+      "min": [
+        0.0641050785779953,
+        0.056852087378501892
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 642,
+      "max": [
+        641
+      ],
+      "min": [
+        0
+      ],
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "twistedc3 (https://sketchfab.com/twistedc3)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/models/a65141ab47d04842b36009434476c6c2",
+      "title": "Low Poly Tree"
+    },
+    "generator": "Sketchfab-3.41.2",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 2568,
+      "byteOffset": 0,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 5136,
+      "byteOffset": 2568,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 15408,
+      "byteOffset": 7704,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 10272,
+      "byteOffset": 23112,
+      "byteStride": 16,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 33384,
+      "uri": "scene.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "textures/Material.001_baseColor.png"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "emissiveFactor": [
+        0,
+        0,
+        0
+      ],
+      "name": "Material.001",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "baseColorTexture": {
+          "index": 0,
+          "texCoord": 0
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.95770514949999996
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Icosphere_Material.001_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3
+          },
+          "indices": 4,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "RootNode (gltf orientation matrix)",
+      "rotation": [
+        -0.70710678118654746,
+        -0,
+        -0,
+        0.70710678118654757
+      ]
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "RootNode (model correction matrix)"
+    },
+    {
+      "children": [
+        3
+      ],
+      "matrix": [
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        -1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "name": "Tree.fbx"
+    },
+    {
+      "children": [
+        4
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        5
+      ],
+      "matrix": [
+        235.61709594726562,
+        0,
+        0,
+        0,
+        -0,
+        -3.8386897348058844e-05,
+        -235.6170959472625,
+        0,
+        0,
+        176.33256530761486,
+        -2.8728221338821474e-05,
+        0,
+        -174.53779602050781,
+        731.0589599609375,
+        0,
+        1
+      ],
+      "name": "Icosphere"
+    },
+    {
+      "mesh": 0,
+      "name": "Icosphere_Material.001_0"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "OSG_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    }
+  ]
+}
+
