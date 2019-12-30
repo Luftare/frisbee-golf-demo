@@ -6,22 +6,28 @@
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.1/dist/aframe-extras.min.js"></script>
   <script src="trigger-cylinder.js"></script>
   <script src="components.js"></script>
+  <script src="oak.js"></script>
+  <script src="pine.js"></script>
+  <script src="bush.js"></script>
 </head>
 
 <body>
   <a-scene fog="type: linear; color: #aaa; far: 70; near: 0" physics="debug:false; restitution:0.1; friction: 0.005;">
     <a-assets>
       <a-asset-item id="oak-model" src="assets/oak/scene.gltf"></a-asset-item>
+      <a-asset-item id="pine-model" src="assets/pine/scene.gltf"></a-asset-item>
+      <a-asset-item id="bush-model" src="assets/bush/scene.gltf"></a-asset-item>
     </a-assets>
 
-    <a-entity position="-3 1 -14" rotation="0 40 0">
-      <a-entity gltf-model="#oak-model" scale="0.005 0.005 0.005" position="0 -0.3 0">
-      </a-entity>
-      <a-cylinder radius="1.7" height="2" material="color: #888; opacity: 0; transparent: true;" position="0 3.4 0"
-        trigger-cylinder="selector: [frisbee]"></a-cylinder>
-      <a-cylinder radius="0.3" height="7" material="color: #888; opacity: 0; transparent: true;" static-body>
-      </a-cylinder>
-    </a-entity>
+
+    <a-oak-tree position="-3 1 -14" rotation="0 70 0"></a-oak-tree>
+    <a-oak-tree position="3 1 -14" rotation="0 20 0"></a-oak-tree>
+
+    <a-pine-tree position="0 1 -10" rotation="0 20 0"></a-pine-tree>
+    <a-pine-tree position="-6 0 -4" rotation="0 130 0" scale="0.5 0.5 0.5"></a-pine-tree>
+
+    <a-bush position="-2 1 -2" rotation="0 130 0"></a-bush>
+
 
 
     <a-entity light="type: ambient; color: #ccc"></a-entity>
@@ -55,10 +61,6 @@
       </a-cylinder>
       <a-cylinder radius="0.5" height="0.2" material="color: #DD3;" position="0 1.25 0" static-body></a-cylinder>
     </a-entity>
-
-    <a-box width="1" height="3" depth="1" position="5 0 3" material="color: #222" static-body></a-box>
-    <a-box width="1" height="10" depth="1" position="5 0 3" material="color: #222" static-body></a-box>
-    <a-box width="1" height="3" depth="1" position="-3 0 -2" material="color: #222" static-body></a-box>
 
     <a-box width="200" height="1" depth="200" position="0 -1 0" material="color: green;" static-body></a-box>
     <a-sphere radius="50" position="3 -48 -20" static-body material="color: green;"></a-sphere>
