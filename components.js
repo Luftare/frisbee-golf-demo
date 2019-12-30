@@ -147,7 +147,7 @@ AFRAME.registerComponent('frisbee', {
     const shouldTestIsLanded = this.data.didThrow && !this.data.isLanded;
 
     if (shouldTestIsLanded) {
-      const restLimit = 0.2;
+      const restLimit = 0.4;
       this.data.isLanded = velocityMagnitude < restLimit;
 
       if (this.data.isLanded) {
@@ -271,18 +271,18 @@ AFRAME.registerComponent('frisbee-thrower', {
   },
 
   tick() {
-    if (this.didThrow) return;
-    const { body } = $('#disc');
-    if (!body) return;
-
-    this.data.canThrow = this.isAtFrisbeeMarker();
-
-    this.frisbee.setAttribute('material', 'opacity', this.data.canThrow ? 1 : 0.3);
-
+    const cam = this.el.object3D;
     const pos = this.throwerPosition;
 
-    const cam = this.el.object3D;
     cam.getWorldPosition(pos);
+
+
+
+    if (this.didThrow) return;
+
+    const { body } = this.frisbee;
+    this.frisbee.setAttribute('material', 'opacity', this.data.canThrow ? 1 : 0.3);
+    this.data.canThrow = this.isAtFrisbeeMarker();
 
     const dist = 1.3;
     const x = -Math.sin(cam.rotation.y) * dist;

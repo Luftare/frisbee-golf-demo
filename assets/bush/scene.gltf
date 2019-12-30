@@ -3,74 +3,74 @@
     {
       "bufferView": 2,
       "componentType": 5126,
-      "count": 32,
+      "count": 736,
       "max": [
-        59.055130004882812,
-        59.055133819580078,
-        59.055133819580078
+        0.71525001525878906,
+        0.507610023021698,
+        0.80733001232147217
       ],
       "min": [
-        -59.055130004882812,
-        -59.055133819580078,
-        -59.055133819580078
+        -0.64620000123977661,
+        -0.46378999948501587,
+        -0.17165000736713409
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 2,
-      "byteOffset": 384,
+      "byteOffset": 8832,
       "componentType": 5126,
-      "count": 32,
+      "count": 736,
       "max": [
-        1,
-        4.025249324968172e-07,
-        1
+        0.98842388391494751,
+        0.98067170381546021,
+        0.99359989166259766
       ],
       "min": [
-        -1,
-        -5.2503256853242419e-08,
-        -1
+        -0.99532949924468994,
+        -0.99701261520385742,
+        -0.81057244539260864
       ],
       "type": "VEC3"
     },
     {
       "bufferView": 3,
       "componentType": 5126,
-      "count": 32,
+      "count": 736,
       "max": [
-        1,
-        6.4595539583933714e-08,
-        1,
+        0.99999988079071045,
+        0.99999874830245972,
+        0.0023966389708220959,
         1
       ],
       "min": [
-        -1,
-        -2.5838215833573486e-07,
-        -1,
-        1
+        0.0014033918268978596,
+        -0.99999511241912842,
+        -0.0021504389587789774,
+        -1
       ],
       "type": "VEC4"
     },
     {
       "bufferView": 1,
       "componentType": 5126,
-      "count": 32,
+      "count": 736,
       "max": [
-        1,
-        1
+        0.41830000281333923,
+        0.16665999591350555
       ],
       "min": [
-        0,
-        0
+        0.322409987449646,
+        0.01906999945640564
       ],
       "type": "VEC2"
     },
     {
       "bufferView": 0,
       "componentType": 5125,
-      "count": 48,
+      "count": 888,
       "max": [
-        31
+        735
       ],
       "min": [
         0
@@ -80,42 +80,42 @@
   ],
   "asset": {
     "extras": {
-      "author": "Sofia M. (https://sketchfab.com/tailredtwintails)",
+      "author": "proxy_doug (https://sketchfab.com/proxy_doug)",
       "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
-      "source": "https://sketchfab.com/models/d936897141fb4df89f67153370ec3e32",
-      "title": "Grass"
+      "source": "https://sketchfab.com/models/d09e9a94f5d44496b323164db76e10f4",
+      "title": "Bush"
     },
-    "generator": "Sketchfab-3.19.6",
+    "generator": "Sketchfab-3.47.8",
     "version": "2.0"
   },
   "bufferViews": [
     {
       "buffer": 0,
-      "byteLength": 192,
+      "byteLength": 3552,
       "byteOffset": 0,
       "name": "floatBufferViews",
       "target": 34963
     },
     {
       "buffer": 0,
-      "byteLength": 256,
-      "byteOffset": 192,
+      "byteLength": 5888,
+      "byteOffset": 3552,
       "byteStride": 8,
       "name": "floatBufferViews",
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteLength": 768,
-      "byteOffset": 448,
+      "byteLength": 17664,
+      "byteOffset": 9440,
       "byteStride": 12,
       "name": "floatBufferViews",
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteLength": 512,
-      "byteOffset": 1216,
+      "byteLength": 11776,
+      "byteOffset": 27104,
       "byteStride": 16,
       "name": "floatBufferViews",
       "target": 34962
@@ -123,32 +123,24 @@
   ],
   "buffers": [
     {
-      "byteLength": 1728,
+      "byteLength": 38880,
       "uri": "scene.bin"
     }
   ],
-  "extensionsUsed": [
-    "KHR_materials_unlit"
-  ],
   "images": [
     {
-      "uri": "textures/Material_25_baseColor.png"
+      "uri": "textures/material_baseColor.png"
     }
   ],
   "materials": [
     {
-      "alphaCutoff": 0.49257669269999999,
-      "alphaMode": "MASK",
-      "doubleSided": false,
+      "doubleSided": true,
       "emissiveFactor": [
         0,
         0,
         0
       ],
-      "extensions": {
-        "KHR_materials_unlit": {}
-      },
-      "name": "Material_25",
+      "name": "material",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
           1,
@@ -161,13 +153,13 @@
           "texCoord": 0
         },
         "metallicFactor": 0,
-        "roughnessFactor": 1
+        "roughnessFactor": 0.59999999999999998
       }
     }
   ],
   "meshes": [
     {
-      "name": "Plane003_Material #25_0",
+      "name": "Bush_0",
       "primitives": [
         {
           "attributes": {
@@ -206,59 +198,17 @@
       "children": [
         3
       ],
-      "matrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        -1,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1
-      ],
-      "name": "24a3a569b76244328e1648a238442ce4.fbx"
+      "name": "Root"
     },
     {
       "children": [
         4
       ],
-      "name": "RootNode"
-    },
-    {
-      "children": [
-        5
-      ],
-      "matrix": [
-        -0.9999999999999809,
-        -8.7422776695939087e-08,
-        1.7484555326941484e-07,
-        0,
-        -8.7422748209979296e-08,
-        0.9999999999999829,
-        1.6292070016444118e-07,
-        0,
-        -1.7484556751239185e-07,
-        1.6292068487895931e-07,
-        -0.99999999999997136,
-        0,
-        0,
-        0,
-        0,
-        1
-      ],
-      "name": "Plane003"
+      "name": "Bush"
     },
     {
       "mesh": 0,
-      "name": "Plane003_Material #25_0"
+      "name": "Bush_0"
     }
   ],
   "samplers": [

@@ -9,6 +9,9 @@
   <script src="oak.js"></script>
   <script src="pine.js"></script>
   <script src="bush.js"></script>
+  <script src="hill.js"></script>
+  <script src="rock.js"></script>
+  <script src="cloud.js"></script>
 </head>
 
 <body>
@@ -17,22 +20,31 @@
       <a-asset-item id="oak-model" src="assets/oak/scene.gltf"></a-asset-item>
       <a-asset-item id="pine-model" src="assets/pine/scene.gltf"></a-asset-item>
       <a-asset-item id="bush-model" src="assets/bush/scene.gltf"></a-asset-item>
+      <a-asset-item id="rock-model" src="assets/rock/scene.gltf"></a-asset-item>
+      <a-asset-item id="cloud-model" src="assets/cloud/scene.gltf"></a-asset-item>
     </a-assets>
 
-
+    <a-cloud rotation="0 90 0"
+      animation="property: position; from: 0 24 -40; to: 10 24 -40; dur: 60000; easing: linear; loop: true; dir: alternate;">
+    </a-cloud>
+    <a-cloud rotation="0 95 0"
+      animation="property: position; from: 40 40 -10; to: -40 40 -10; dur: 100000; easing: linear; loop: true; dir: alternate;"
+      scale="1.5 1.5 1.5">
+    </a-cloud>
+    <a-cloud rotation="0 80 0"
+      animation="property: position; from: -10 29 10; to: 40 29 10; dur: 100000; easing: linear; loop: true; dir: alternate;">
+    </a-cloud>
     <a-oak-tree position="-3 1 -14" rotation="0 70 0"></a-oak-tree>
     <a-oak-tree position="3 1 -14" rotation="0 20 0"></a-oak-tree>
 
     <a-pine-tree position="0 1 -10" rotation="0 20 0"></a-pine-tree>
-    <a-pine-tree position="-6 0 -4" rotation="0 130 0" scale="0.5 0.5 0.5"></a-pine-tree>
+    <a-pine-tree position="-6 0 -4" rotation="0 130 0"></a-pine-tree>
 
     <a-bush position="-2 1 -2" rotation="0 130 0"></a-bush>
 
-
-
-    <a-entity light="type: ambient; color: #ccc"></a-entity>
-    <a-entity light="type: directional; color: #fff; intensity: 0.5" position="-0.5 1 1"></a-entity>
-
+    <a-entity light="type: ambient; color: #aaa;"></a-entity>
+    <a-entity light="type: directional; color: #fff; intensity: 0.6;" position="-10 150 50">
+    </a-entity>
 
     <a-cylinder id="disc" radius="0.2" height="0.03" position="0.3 2 -4"
       material="color: #f80; transparent: true; opacity: 1;" dynamic-body frisbee>
@@ -63,7 +75,11 @@
     </a-entity>
 
     <a-box width="200" height="1" depth="200" position="0 -1 0" material="color: green;" static-body></a-box>
-    <a-sphere radius="50" position="3 -48 -20" static-body material="color: green;"></a-sphere>
+    <a-hill position="40 0 0"></a-hill>
+    <a-hill position="3 0 -20" radius="60" height="1.5"></a-hill>
+    <a-rock position="4 0 -4"></a-rock>
+
+
     <a-entity geometry="primitive:sphere;radius:13;" material="color:green;" position="-20 -10 -15" static-body>
     </a-entity>
   </a-scene>
