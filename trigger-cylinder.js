@@ -1,6 +1,3 @@
-// var event = new Event(triggereventname + '_entered');
-// this.el.dispatchEvent(event);
-
 AFRAME.registerComponent('trigger-cylinder', {
   multiple: true,
   schema: {
@@ -28,6 +25,9 @@ AFRAME.registerComponent('trigger-cylinder', {
       type: 'string',
       default: '[camera]'
     },
+    payload: {
+      default: ''
+    }
   },
 
   init() {
@@ -72,7 +72,7 @@ AFRAME.registerComponent('trigger-cylinder', {
         const isInside = this.pointInside(subscriberPosition);
 
         if (isInside) {
-          const event = new CustomEvent('inside-trigger-zone', { detail: { source: this } });
+          const event = new CustomEvent('inside-trigger-zone', { detail: { source: this, payload: this.data.payload } });
           el.dispatchEvent(event);
         }
       });

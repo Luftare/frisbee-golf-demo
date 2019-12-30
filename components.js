@@ -29,6 +29,7 @@ AFRAME.registerComponent('frisbee', {
     isLanded: { default: false },
     didThrow: { default: false },
     isDamped: { default: false },
+    dampFactor: { default: 1 },
     maxFlightTime: { default: 7000 },
   },
 
@@ -55,7 +56,7 @@ AFRAME.registerComponent('frisbee', {
     });
 
     this.el.addEventListener('inside-trigger-zone', (e) => {
-      this.handleInsideZone();
+      this.handleInsideZone(e);
     });
   },
 
@@ -85,9 +86,9 @@ AFRAME.registerComponent('frisbee', {
     });
   },
 
-  handleInsideZone() {
+  handleInsideZone(e) {
+    this.data.dampFactor = parseFloat(e.detail.payload);
     this.data.isDamped = true;
-
     const shouldTestIfDiscIsInBasket = !this.data.inBasket && !this.discInBasketCheckScheduled;
 
     if (shouldTestIfDiscIsInBasket) {
@@ -164,17 +165,16 @@ AFRAME.registerComponent('frisbee', {
       this.el.body.applyForce(this.airFrictionForce, this.center);
     }
 
-    if (this.data.isDamped) {
-      this.el.body.velocity.x *= 0.8;
-      this.el.body.velocity.z *= 0.8;
-    }
+    this.el.body.velocity.x *= this.data.dampFactor;
+    this.el.body.velocity.z *= this.data.dampFactor;
 
+    this.data.dampFactor = 1;
     this.data.isDamped = false;
   }
 });
 
 AFRAME.registerComponent('frisbee-thrower', {
-  dependencies: ['frisbee'],
+  dependencies: ['frisbee', 'frisbee-marker'],
 
   schema: {
     canThrow: { default: true },
@@ -188,9 +188,9 @@ AFRAME.registerComponent('frisbee-thrower', {
     this.throwerPosition = new THREE.Vector3();
     this.frisbeeOrientation = new THREE.Quaternion();
     this.adjustingFrisbeeOrientation = false;
-    this.frisbee = $('[frisbee]');
+
     this.frisbeeMarker = $('#frisbee-marker');
-    this.basket = $('[basket]');
+    this.frisbee = $('[frisbee]');
 
     this.frisbeeMarker.setAttribute('position', this.el.getAttribute('position'));
 
@@ -209,7 +209,7 @@ AFRAME.registerComponent('frisbee-thrower', {
         this.data.power = num;
       }
 
-      if (key === ' ' && this.data.canThrow) {
+      if (key === ' ') {
         this.shouldThrow = true;
         this.frisbee.dispatchEvent(new CustomEvent('throw'));
       }
@@ -259,6 +259,7 @@ AFRAME.registerComponent('frisbee-thrower', {
   },
 
   isAtFrisbeeMarker() {
+    if (!this.frisbeeMarker || !this.basket) return false;
     const maxDistanceSq = 2 ** 2;
     const markerPosition = this.frisbeeMarker.getAttribute('position');
     const basketPosition = this.basket.getAttribute('position');
@@ -276,12 +277,10 @@ AFRAME.registerComponent('frisbee-thrower', {
 
     cam.getWorldPosition(pos);
 
-
-
     if (this.didThrow) return;
 
     const { body } = this.frisbee;
-    this.frisbee.setAttribute('material', 'opacity', this.data.canThrow ? 1 : 0.3);
+    // this.frisbee.setAttribute('material', 'opacity', this.data.canThrow ? 1 : 0.3);
     this.data.canThrow = this.isAtFrisbeeMarker();
 
     const dist = 1.3;

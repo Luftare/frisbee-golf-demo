@@ -6,6 +6,7 @@
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.1/dist/aframe-extras.min.js"></script>
   <script src="trigger-cylinder.js"></script>
   <script src="components.js"></script>
+  <script src="basket.js"></script>
   <script src="oak.js"></script>
   <script src="pine.js"></script>
   <script src="bush.js"></script>
@@ -34,6 +35,7 @@
     <a-cloud rotation="0 80 0"
       animation="property: position; from: -10 29 10; to: 40 29 10; dur: 100000; easing: linear; loop: true; dir: alternate;">
     </a-cloud>
+
     <a-oak-tree position="-3 1 -14" rotation="0 70 0"></a-oak-tree>
     <a-oak-tree position="3 1 -14" rotation="0 20 0"></a-oak-tree>
 
@@ -65,23 +67,18 @@
       </a-entity>
     </a-entity>
 
-    <a-entity basket position="-10 0.3 -25">
-      <a-cylinder radius="0.5" height="0.2" material="color: #777;" position="0 0.5 0" static-body></a-cylinder>
-      <a-cylinder radius="0.05" height="5.5" material="color: #777;" position="0 -1.5 0" static-body></a-cylinder>
-      <a-cylinder radius="0.4" height="0.7" material="color: #888; opacity: 0.8; transparent: true;" position="0 0.9 0"
-        trigger-cylinder="selector: [frisbee]">
-      </a-cylinder>
-      <a-cylinder radius="0.5" height="0.2" material="color: #DD3;" position="0 1.25 0" static-body></a-cylinder>
-    </a-entity>
+    <a-basket position="0 0 -5"></a-basket>
+    <a-basket position="2 0 -5"></a-basket>
 
     <a-box width="200" height="1" depth="200" position="0 -1 0" material="color: green;" static-body></a-box>
     <a-hill position="40 0 0"></a-hill>
     <a-hill position="3 0 -20" radius="60" height="1.5"></a-hill>
+
+    <a-hill position="-20 0 -270" radius="560" height="45"></a-hill>
+    <a-hill position="-550 0 -50" radius="660" height="20"></a-hill>
+    <a-hill position="250 0 220" radius="1260" height="35"></a-hill>
+
     <a-rock position="4 0 -4"></a-rock>
-
-
-    <a-entity geometry="primitive:sphere;radius:13;" material="color:green;" position="-20 -10 -15" static-body>
-    </a-entity>
   </a-scene>
 </body>
 
