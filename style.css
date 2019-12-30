@@ -1,0 +1,12 @@
+* {
+  font-family: sans-serif;
+}
+
+.gui {
+  text-shadow: 1px 1px 0 white;
+  font-size: 24px;
+  position: absolute;
+  pointer-events: none;
+  top: 16px;
+  left: 16px;
+}

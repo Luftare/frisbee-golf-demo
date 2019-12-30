@@ -13,10 +13,11 @@
   <script src="hill.js"></script>
   <script src="rock.js"></script>
   <script src="cloud.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <a-scene fog="type: linear; color: #aaa; far: 70; near: 0" physics="debug:false; restitution:0.1; friction: 0.005;">
+  <a-scene fog="type: linear; color: #ddd; far: 90; near: 0" physics="debug:false; restitution:0.1; friction: 0.005;">
     <a-assets>
       <a-asset-item id="oak-model" src="assets/oak/scene.gltf"></a-asset-item>
       <a-asset-item id="pine-model" src="assets/pine/scene.gltf"></a-asset-item>
@@ -36,6 +37,9 @@
       animation="property: position; from: -10 29 10; to: 40 29 10; dur: 100000; easing: linear; loop: true; dir: alternate;">
     </a-cloud>
 
+    <a-entity position="-20 0 0" forest="radius: 80; count: 20; type: a-pine-tree;"></a-entity>
+    <a-entity position="-20 0 0" forest="radius: 80; count: 20; type: a-oak-tree;"></a-entity>
+
     <a-oak-tree position="-3 1 -14" rotation="0 70 0"></a-oak-tree>
     <a-oak-tree position="3 1 -14" rotation="0 20 0"></a-oak-tree>
 
@@ -48,8 +52,8 @@
     <a-entity light="type: directional; color: #fff; intensity: 0.6;" position="-10 150 50">
     </a-entity>
 
-    <a-cylinder id="disc" radius="0.2" height="0.03" position="0.3 2 -4"
-      material="color: #f80; transparent: true; opacity: 1;" dynamic-body frisbee>
+    <a-cylinder radius="0.2" height="0.03" position="0.3 2 -4" material="color: #f80; transparent: true; opacity: 1;"
+      dynamic-body frisbee>
     </a-cylinder>
 
     <a-entity id="rig" movement-controls kinematic-body="radius: 0.7;" position="0 0.5 0">
@@ -67,8 +71,8 @@
       </a-entity>
     </a-entity>
 
-    <a-basket position="0 0 -5"></a-basket>
-    <a-basket position="2 0 -5"></a-basket>
+    <a-basket position="-50 0 0"></a-basket>
+    <a-basket position="-5 0.9 -17"></a-basket>
 
     <a-box width="200" height="1" depth="200" position="0 -1 0" material="color: green;" static-body></a-box>
     <a-hill position="40 0 0"></a-hill>
@@ -80,6 +84,9 @@
 
     <a-rock position="4 0 -4"></a-rock>
   </a-scene>
+  <div class="gui">
+    <div>Power: <span id="gui__power-value">0</span></div>
+  </div>
 </body>
 
 </html>

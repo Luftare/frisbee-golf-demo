@@ -179,7 +179,7 @@ AFRAME.registerComponent('frisbee-thrower', {
   schema: {
     canThrow: { default: true },
     power: { default: 6 },
-    maxVelocity: { default: 18 },
+    maxVelocity: { default: 20 },
   },
 
   init() {
@@ -194,6 +194,8 @@ AFRAME.registerComponent('frisbee-thrower', {
 
     this.frisbeeMarker.setAttribute('position', this.el.getAttribute('position'));
 
+    $('#gui__power-value').innerHTML = this.data.power;
+
     window.addEventListener('mousemove', (e) => {
       if (this.adjustingFrisbeeOrientation) {
         this.frisbeeOrientation.x += e.movementY * 0.001;
@@ -206,7 +208,9 @@ AFRAME.registerComponent('frisbee-thrower', {
 
       const isNumber = !isNaN(num);
       if (isNumber) {
-        this.data.power = num;
+        const parsedNumber = num === 0 ? 10 : num;
+        this.data.power = parsedNumber;
+        $('#gui__power-value').innerHTML = parsedNumber;
       }
 
       if (key === ' ') {
@@ -214,13 +218,16 @@ AFRAME.registerComponent('frisbee-thrower', {
         this.frisbee.dispatchEvent(new CustomEvent('throw'));
       }
       if (key === 'r') {
+        if (!this.didThrow) {
+          this.frisbeeOrientation.z = 0;
+          this.frisbeeOrientation.x = 0;
+        }
+
         this.frisbeeMarker.setAttribute('visible', true); // REMOVE THIS TO DISABLE FREE THROWING
         this.frisbeeMarker.setAttribute('position', this.throwerPosition); // REMOVE THIS TO DISABLE FREE THROWING
         this.shouldThrow = false;
         this.didThrow = false;
 
-        this.frisbeeOrientation.z = 0;
-        this.frisbeeOrientation.x = 0;
         this.frisbee.dispatchEvent(new CustomEvent('pick-up'));
       }
       if (key === 'i') {
@@ -280,7 +287,6 @@ AFRAME.registerComponent('frisbee-thrower', {
     if (this.didThrow) return;
 
     const { body } = this.frisbee;
-    // this.frisbee.setAttribute('material', 'opacity', this.data.canThrow ? 1 : 0.3);
     this.data.canThrow = this.isAtFrisbeeMarker();
 
     const dist = 1.3;
@@ -309,7 +315,7 @@ AFRAME.registerComponent('frisbee-thrower', {
   },
 
   getThrowVelocity() {
-    const normalizedPower = this.data.power / 9;
+    const normalizedPower = this.data.power / 10;
     const weightedPower = normalizedPower ** 0.7;
     return weightedPower * this.data.maxVelocity;
   },
@@ -327,3 +333,25 @@ AFRAME.registerComponent('frisbee-thrower', {
     body.velocity.z = velocity.z;
   }
 });
+
+AFRAME.registerComponent('forest', {
+  multiple: true,
+  schema: {
+    count: { default: 10 },
+    radius: { default: 20 },
+    type: { default: 'a-oak-tree' },
+  },
+  init() {
+    const { x, y, z } = this.el.getAttribute('position');
+
+    [...Array(this.data.count)].forEach(() => {
+      const radius = Math.random() * this.data.radius;
+      const angle = Math.random() * Math.PI * 2;
+      const treeX = Math.cos(angle) * radius + x;
+      const treeZ = Math.sin(angle) * radius + z;
+      const el = document.createElement(this.data.type);
+      el.setAttribute('position', { x: treeX, y, z: treeZ })
+      this.el.sceneEl.appendChild(el);
+    });
+  }
+})
