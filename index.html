@@ -1,124 +1,242 @@
 <html>
+  <head>
+    <script src="https://aframe.io/releases/1.0.2/aframe.min.js"></script>
+    <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.1/dist/aframe-extras.min.js"></script>
+    <script src="trigger-cylinder.js"></script>
+    <script src="components.js"></script>
+    <script src="basket.js"></script>
+    <script src="oak.js"></script>
+    <script src="pine.js"></script>
+    <script src="bush.js"></script>
+    <script src="hill.js"></script>
+    <script src="rock.js"></script>
+    <script src="cloud.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
 
-<head>
-  <script src="https://aframe.io/releases/1.0.2/aframe.min.js"></script>
-  <script src="//cdn.rawgit.com/donmccurdy/aframe-physics-system/v4.0.1/dist/aframe-physics-system.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.1/dist/aframe-extras.min.js"></script>
-  <script src="trigger-cylinder.js"></script>
-  <script src="components.js"></script>
-  <script src="basket.js"></script>
-  <script src="oak.js"></script>
-  <script src="pine.js"></script>
-  <script src="bush.js"></script>
-  <script src="hill.js"></script>
-  <script src="rock.js"></script>
-  <script src="cloud.js"></script>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <body>
+    <a-scene
+      fog="type: linear; color: #ddd; far: 90; near: 0"
+      physics="debug:false; restitution:0.1; friction: 0.005;"
+    >
+      <a-assets>
+        <a-asset-item id="oak-model" src="assets/oak/scene.gltf"></a-asset-item>
+        <a-asset-item
+          id="pine-model"
+          src="assets/pine/scene.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="bush-model"
+          src="assets/bush/scene.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="rock-model"
+          src="assets/rock/scene.gltf"
+        ></a-asset-item>
+        <a-asset-item
+          id="cloud-model"
+          src="assets/cloud/scene.gltf"
+        ></a-asset-item>
+      </a-assets>
 
-<body>
-  <a-scene fog="type: linear; color: #ddd; far: 90; near: 0" physics="debug:false; restitution:0.1; friction: 0.005;">
-    <a-assets>
-      <a-asset-item id="oak-model" src="assets/oak/scene.gltf"></a-asset-item>
-      <a-asset-item id="pine-model" src="assets/pine/scene.gltf"></a-asset-item>
-      <a-asset-item id="bush-model" src="assets/bush/scene.gltf"></a-asset-item>
-      <a-asset-item id="rock-model" src="assets/rock/scene.gltf"></a-asset-item>
-      <a-asset-item id="cloud-model" src="assets/cloud/scene.gltf"></a-asset-item>
-    </a-assets>
-
-    <a-entity light="type: ambient; color: #aaa;"></a-entity>
-    <a-entity light="type: directional; color: #fff; intensity: 0.6;" position="-10 150 50">
-    </a-entity>
-
-    <a-cloud rotation="0 90 0"
-      animation="property: position; from: 0 24 -40; to: 10 24 -40; dur: 60000; easing: linear; loop: true; dir: alternate;">
-    </a-cloud>
-    <a-cloud rotation="0 95 0"
-      animation="property: position; from: 40 40 -10; to: -40 40 -10; dur: 100000; easing: linear; loop: true; dir: alternate;"
-      scale="1.5 1.5 1.5">
-    </a-cloud>
-    <a-cloud rotation="0 80 0"
-      animation="property: position; from: -10 29 10; to: 40 29 10; dur: 100000; easing: linear; loop: true; dir: alternate;">
-    </a-cloud>
-
-    <a-oak-tree id="oak-0" position="2.61641 -0.69427 -11.53358"></a-oak-tree>
-    <a-oak-tree id="oak-1" position="11.95851 0 -18.56917"></a-oak-tree>
-    <a-oak-tree id="oak-2" rotation="0 30 0" position="19.90614 -0.70621 -23.95989"></a-oak-tree>
-    <a-oak-tree id="oak-3" rotation="0 100 0" position="16.40143 0 -24.80017"></a-oak-tree>
-    <a-oak-tree id="oak-4" position="5 0 4"></a-oak-tree>
-    <a-oak-tree id="oak-5" position="5 0 5"></a-oak-tree>
-    <a-oak-tree id="oak-6" position="5 0 6"></a-oak-tree>
-    <a-oak-tree id="oak-7" position="5 0 7"></a-oak-tree>
-    <a-oak-tree id="oak-8" position="5 0 8"></a-oak-tree>
-    <a-oak-tree id="oak-9" position="5 0 9"></a-oak-tree>
-
-    <a-pine-tree id="pine-0" position="-9.53396 1.59658 -14.68766"></a-pine-tree>
-    <a-pine-tree id="pine-1" rotation="0 60 0" position="-13.4281 1.85786 -13.59517"></a-pine-tree>
-    <a-pine-tree id="pine-2" rotation="0 110 0" position="-11.1911 1.39508 -8.5422"></a-pine-tree>
-    <a-pine-tree id="pine-3" position="17.4263 0 -34.1791"></a-pine-tree>
-    <a-pine-tree id="pine-4" position="31.57196 0 -33.38079"></a-pine-tree>
-    <a-pine-tree id="pine-5" position="-5 0 5"></a-pine-tree>
-    <a-pine-tree id="pine-6" position="-5 0 6"></a-pine-tree>
-    <a-pine-tree id="pine-7" position="-5 0 7"></a-pine-tree>
-    <a-pine-tree id="pine-8" position="-5 0 8"></a-pine-tree>
-    <a-pine-tree id="pine-9" position="-5 0 9"></a-pine-tree>
-
-    <a-bush id="bush-0" position="2.59245 0 -4.0572"></a-bush>
-    <a-bush id="bush-1" position="22.16544 0 -34.79307"></a-bush>
-    <a-bush id="bush-2" position="25.05682 0 -23.12628"></a-bush>
-    <a-bush id="bush-3" position="3 0 3"></a-bush>
-    <a-bush id="bush-4" position="3 0 4"></a-bush>
-    <a-bush id="bush-5" position="3 0 5"></a-bush>
-    <a-bush id="bush-6" position="3 0 6"></a-bush>
-    <a-bush id="bush-7" position="3 0 7"></a-bush>
-    <a-bush id="bush-8" position="3 0 8"></a-bush>
-    <a-bush id="bush-9" position="3 0 9"></a-bush>
-
-    <a-rock id="rock-0" rotation="0 0 0" position="11.93306 -0.41225 -26.30957"></a-rock>
-    <a-rock id="rock-1" position="-3 0 1"></a-rock>
-    <a-rock id="rock-2" position="-3 0 2"></a-rock>
-    <a-rock id="rock-3" position="-3 0 3"></a-rock>
-    <a-rock id="rock-4" position="-3 0 4"></a-rock>
-    <a-rock id="rock-5" position="-3 0 5"></a-rock>
-    <a-rock id="rock-6" position="-3 0 6"></a-rock>
-    <a-rock id="rock-7" position="-3 0 7"></a-rock>
-    <a-rock id="rock-8" position="-3 0 8"></a-rock>
-    <a-rock id="rock-9" position="-3 0 9"></a-rock>
-
-    <a-cylinder radius="0.2" height="0.03" position="0.3 2 -4" material="color: #f80; transparent: true; opacity: 1;"
-      dynamic-body frisbee>
-    </a-cylinder>
-
-    <a-entity id="rig" movement-controls kinematic-body="radius: 0.7;" position="0 0.5 0">
-      <a-entity id="camera" camera="fov:60;" frisbee-thrower look-controls="pointerLockEnabled: true"
-        position="0 1.6 0">
+      <a-entity light="type: ambient; color: #aaa;"></a-entity>
+      <a-entity
+        light="type: directional; color: #fff; intensity: 0.6;"
+        position="-10 150 50"
+      >
       </a-entity>
-    </a-entity>
 
-    <a-entity id="frisbee-marker" position="0 0 0">
-      <a-entity frisbee-marker-part geometry="primitive:cylinder;radius:0.1;height: 2;" material="color:yellow;"
-        animation="property: position; from: 0 4 0; to: 0 5 0; dur: 600; easing: linear; loop: true; dir: alternate;">
-        <a-cone frisbee-marker-part radius-bottom="0.3" height="1" material="color:yellow;" rotation="180 0 0"
-          position="0 -1.2 0">
-        </a-cone>
+      <a-cloud
+        rotation="0 90 0"
+        animation="property: position; from: 0 24 -40; to: 10 24 -40; dur: 60000; easing: linear; loop: true; dir: alternate;"
+      >
+      </a-cloud>
+      <a-cloud
+        rotation="0 95 0"
+        animation="property: position; from: 40 40 -10; to: -40 40 -10; dur: 100000; easing: linear; loop: true; dir: alternate;"
+        scale="1.5 1.5 1.5"
+      >
+      </a-cloud>
+      <a-cloud
+        rotation="0 80 0"
+        animation="property: position; from: -10 29 10; to: 40 29 10; dur: 100000; easing: linear; loop: true; dir: alternate;"
+      >
+      </a-cloud>
+
+      <a-oak-tree id="oak-0" position="2.61641 -0.69427 -11.53358"></a-oak-tree>
+      <a-oak-tree id="oak-1" position="11.95851 0 -18.56917"></a-oak-tree>
+      <a-oak-tree
+        id="oak-2"
+        rotation="0 30 0"
+        position="13.37957 -0.70621 -27.90468"
+      ></a-oak-tree>
+      <a-oak-tree
+        id="oak-3"
+        rotation="0 100 0"
+        position="16.81729 0 -29.54843"
+      ></a-oak-tree>
+      <a-oak-tree id="oak-4" position="8.63659 0 2.94526"></a-oak-tree>
+      <a-oak-tree id="oak-5" position="61.75941 0 9.45474"></a-oak-tree>
+      <a-oak-tree
+        id="oak-6"
+        rotation="0 45 0"
+        position="56.68668 -0.6962 7.18063"
+      ></a-oak-tree>
+      <a-oak-tree id="oak-7" position="5 0 7"></a-oak-tree>
+      <a-oak-tree id="oak-8" position="5 0 8"></a-oak-tree>
+      <a-oak-tree id="oak-9" position="5 0 9"></a-oak-tree>
+
+      <a-pine-tree
+        id="pine-0"
+        position="-9.53396 1.59658 -14.68766"
+      ></a-pine-tree>
+      <a-pine-tree
+        id="pine-1"
+        rotation="0 60 0"
+        position="-13.4281 1.85786 -13.59517"
+      ></a-pine-tree>
+      <a-pine-tree
+        id="pine-2"
+        rotation="0 110 0"
+        position="-11.1911 1.39508 -8.5422"
+      ></a-pine-tree>
+      <a-pine-tree id="pine-3" position="17.4263 0 -34.1791"></a-pine-tree>
+      <a-pine-tree id="pine-4" position="31.57196 0 -33.38079"></a-pine-tree>
+      <a-pine-tree
+        id="pine-5"
+        position="31.47956 0.19294 -11.00278"
+      ></a-pine-tree>
+      <a-pine-tree
+        id="pine-6"
+        position="46.5424 1.53361 -10.18252"
+      ></a-pine-tree>
+      <a-pine-tree id="pine-7" position="-5 0 7"></a-pine-tree>
+      <a-pine-tree id="pine-8" position="-5 0 8"></a-pine-tree>
+      <a-pine-tree id="pine-9" position="-5 0 9"></a-pine-tree>
+
+      <a-bush id="bush-0" position="2.59245 0 -4.0572"></a-bush>
+      <a-bush id="bush-1" position="22.16544 0 -34.79307"></a-bush>
+      <a-bush id="bush-2" position="23.32205 0 -27.44934"></a-bush>
+      <a-bush id="bush-3" position="3 0 3"></a-bush>
+      <a-bush id="bush-4" position="3 0 4"></a-bush>
+      <a-bush id="bush-5" position="3 0 5"></a-bush>
+      <a-bush id="bush-6" position="3 0 6"></a-bush>
+      <a-bush id="bush-7" position="52.75122 0 -0.78149"></a-bush>
+      <a-bush id="bush-8" position="47.56214 0 2.63689"></a-bush>
+      <a-bush id="bush-9" position="43.73816 0 -2.70097"></a-bush>
+
+      <a-rock
+        id="rock-0"
+        rotation="0 0 0"
+        position="14.36106 -0.41225 -30.67436"
+      ></a-rock>
+      <a-rock id="rock-1" position="36.64994 1.61769 -17.9119"></a-rock>
+      <a-rock
+        id="rock-2"
+        rotation="0 150 0"
+        position="35.11105 1.14402 -14.52976"
+      ></a-rock>
+      <a-rock
+        id="rock-3"
+        rotation="0 60 0"
+        position="33.06502 0 -15.43903"
+      ></a-rock>
+      <a-rock id="rock-4" position="32.30586 -0.88788 -13.20293"></a-rock>
+      <a-rock id="rock-5" position="-3 0 5"></a-rock>
+      <a-rock id="rock-6" position="-3 0 6"></a-rock>
+      <a-rock id="rock-7" position="-3 0 7"></a-rock>
+      <a-rock id="rock-8" position="-3 0 8"></a-rock>
+      <a-rock id="rock-9" position="-3 0 9"></a-rock>
+
+      <a-cylinder
+        radius="0.2"
+        height="0.03"
+        position="0.3 2 -4"
+        material="color: #f80; transparent: true; opacity: 1;"
+        dynamic-body
+        frisbee
+      >
+      </a-cylinder>
+
+      <a-entity
+        id="rig"
+        movement-controls
+        kinematic-body="radius: 0.7;"
+        position="0 0.5 0"
+      >
+        <a-entity
+          id="camera"
+          camera="fov:60;"
+          frisbee-thrower
+          look-controls="pointerLockEnabled: true"
+          position="0 1.6 0"
+        >
+        </a-entity>
       </a-entity>
-    </a-entity>
 
-    <a-basket id="basket-0" position="-1.97153 -0.13449 -23.25223"></a-basket>
-    <a-basket id="basket-1" position="26.29567 -0.2163 -32.57229"></a-basket>
+      <a-entity id="frisbee-marker" position="0 0 0">
+        <a-entity
+          frisbee-marker-part
+          geometry="primitive:cylinder;radius:0.1;height: 2;"
+          material="color:yellow;"
+          animation="property: position; from: 0 4 0; to: 0 5 0; dur: 600; easing: linear; loop: true; dir: alternate;"
+        >
+          <a-cone
+            frisbee-marker-part
+            radius-bottom="0.3"
+            height="1"
+            material="color:yellow;"
+            rotation="180 0 0"
+            position="0 -1.2 0"
+          >
+          </a-cone>
+        </a-entity>
+      </a-entity>
 
-    <a-box width="200" height="1" depth="200" position="0 -1 0" material="color: green;" static-body></a-box>
+      <a-basket id="basket-0" position="-1.97153 -0.13449 -23.25223"></a-basket>
+      <a-basket id="basket-1" position="26.29567 -0.2163 -32.57229"></a-basket>
+      <a-basket id="basket-2" position="60.60882 0 5.57425"></a-basket>
+      <a-basket id="basket-3" position="39.92873 3.18668 53.1009"></a-basket>
 
-    <a-hill id="hill-0" position="43.33984 0 -19.29541"></a-hill>
-    <a-hill id="hill-1" position="-13.27055 0 -13.53089" radius="60" height="1.5"></a-hill>
+      <a-box
+        width="200"
+        height="1"
+        depth="200"
+        position="0 -1 0"
+        material="color: green;"
+        static-body
+      ></a-box>
 
-    <a-hill id="hill-2" position="-20 0 -270" radius="560" height="45"></a-hill>
-    <a-hill id="hill-3" position="-550 0 -50" radius="660" height="20"></a-hill>
-    <a-hill id="hill-4" position="250 0 220" radius="1260" height="35"></a-hill>
-  </a-scene>
-  <div class="gui">
-    <div>Power: <span id="gui__power-value">0</span></div>
-  </div>
-</body>
+      <a-hill id="hill-0" position="43.33984 0 -19.29541"></a-hill>
+      <a-hill
+        id="hill-1"
+        position="-13.27055 0 -13.53089"
+        radius="60"
+        height="1.5"
+      ></a-hill>
 
+      <a-hill
+        id="hill-2"
+        position="-20 0 -270"
+        radius="560"
+        height="45"
+      ></a-hill>
+      <a-hill
+        id="hill-3"
+        position="-550 0 -50"
+        radius="660"
+        height="20"
+      ></a-hill>
+      <a-hill
+        id="hill-4"
+        position="250 0 220"
+        radius="1260"
+        height="35"
+      ></a-hill>
+    </a-scene>
+    <div class="gui">
+      <div>Power: <span id="gui__power-value">0</span></div>
+    </div>
+  </body>
 </html>

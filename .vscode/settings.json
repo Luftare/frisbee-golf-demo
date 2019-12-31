@@ -1,4 +1,5 @@
 {
   "editor.formatOnSave": true,
-  "javascript.format.semicolons": "insert"
+  "javascript.format.semicolons": "insert",
+  "html.format.wrapLineLength": 230
 }
