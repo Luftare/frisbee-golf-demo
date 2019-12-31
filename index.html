@@ -18,7 +18,7 @@
 
   <body>
     <a-scene
-      fog="type: linear; color: #ddd; far: 90; near: 0"
+      fogz="type: linear; color: #ddd; far: 90; near: 0"
       physics="debug:false; restitution:0.1; friction: 0.005;"
     >
       <a-assets>
@@ -70,7 +70,7 @@
       <a-oak-tree
         id="oak-2"
         rotation="0 30 0"
-        position="13.37957 -0.70621 -27.90468"
+        position="9.72516 -0.70621 -25.56242"
       ></a-oak-tree>
       <a-oak-tree
         id="oak-3"
@@ -84,9 +84,9 @@
         rotation="0 45 0"
         position="56.68668 -0.6962 7.18063"
       ></a-oak-tree>
-      <a-oak-tree id="oak-7" position="5 0 7"></a-oak-tree>
-      <a-oak-tree id="oak-8" position="5 0 8"></a-oak-tree>
-      <a-oak-tree id="oak-9" position="5 0 9"></a-oak-tree>
+      <a-oak-tree id="oak-7" position="62.5949 6.8474 68.2085"></a-oak-tree>
+      <a-oak-tree id="oak-8" position="65.88615 2.10603 37.16852"></a-oak-tree>
+      <a-oak-tree id="oak-9" position="47.88552 1.95174 67.65449"></a-oak-tree>
 
       <a-pine-tree
         id="pine-0"
@@ -112,17 +112,26 @@
         id="pine-6"
         position="46.5424 1.53361 -10.18252"
       ></a-pine-tree>
-      <a-pine-tree id="pine-7" position="-5 0 7"></a-pine-tree>
-      <a-pine-tree id="pine-8" position="-5 0 8"></a-pine-tree>
-      <a-pine-tree id="pine-9" position="-5 0 9"></a-pine-tree>
+      <a-pine-tree
+        id="pine-7"
+        position="48.85618 1.56569 58.79015"
+      ></a-pine-tree>
+      <a-pine-tree
+        id="pine-8"
+        position="52.83408 2.67453 59.10648"
+      ></a-pine-tree>
+      <a-pine-tree
+        id="pine-9"
+        position="51.35571 6.44251 79.9803"
+      ></a-pine-tree>
 
       <a-bush id="bush-0" position="2.59245 0 -4.0572"></a-bush>
       <a-bush id="bush-1" position="22.16544 0 -34.79307"></a-bush>
       <a-bush id="bush-2" position="23.32205 0 -27.44934"></a-bush>
-      <a-bush id="bush-3" position="3 0 3"></a-bush>
-      <a-bush id="bush-4" position="3 0 4"></a-bush>
-      <a-bush id="bush-5" position="3 0 5"></a-bush>
-      <a-bush id="bush-6" position="3 0 6"></a-bush>
+      <a-bush id="bush-3" position="48.78785 3.45194 71.74911"></a-bush>
+      <a-bush id="bush-4" position="19.34346 0 39.74313"></a-bush>
+      <a-bush id="bush-5" position="10.42462 0 35.355"></a-bush>
+      <a-bush id="bush-6" position="77.65661 4.64606 28.52904"></a-bush>
       <a-bush id="bush-7" position="52.75122 0 -0.78149"></a-bush>
       <a-bush id="bush-8" position="47.56214 0 2.63689"></a-bush>
       <a-bush id="bush-9" position="43.73816 0 -2.70097"></a-bush>
@@ -144,8 +153,12 @@
         position="33.06502 0 -15.43903"
       ></a-rock>
       <a-rock id="rock-4" position="32.30586 -0.88788 -13.20293"></a-rock>
-      <a-rock id="rock-5" position="-3 0 5"></a-rock>
-      <a-rock id="rock-6" position="-3 0 6"></a-rock>
+      <a-rock id="rock-5" position="76.91633 0 5.28828"></a-rock>
+      <a-rock
+        id="rock-6"
+        scale="2.02891 2.02891 2.02891"
+        position="85.74859 0 -7.63112"
+      ></a-rock>
       <a-rock id="rock-7" position="-3 0 7"></a-rock>
       <a-rock id="rock-8" position="-3 0 8"></a-rock>
       <a-rock id="rock-9" position="-3 0 9"></a-rock>
@@ -196,11 +209,34 @@
       </a-entity>
 
       <a-tee id="tee-0" position="0 -1.4 0"></a-tee>
+      <a-tee
+        id="tee-1"
+        rotation="0 -83.87471867140607 0"
+        static-body="sphereRadius: NaN"
+        position="-10.09915 -1.4 -30.51"
+      ></a-tee>
+      <a-tee
+        id="tee-2"
+        rotation="0 -141.3469691853887 0"
+        static-body="sphereRadius: NaN"
+        position="16.04102 -1.4 -38.89965"
+      ></a-tee>
+      <a-tee
+        id="tee-3"
+        rotation="0 150.9107807017124 0"
+        position="87.08498 3.01145 6.02924"
+      ></a-tee>
+      <a-tee
+        id="tee-4"
+        rotation="0 33.772424276191245 0"
+        static-body="sphereRadius: NaN"
+        position="48.26591 5.45224 86.24725"
+      ></a-tee>
 
       <a-basket id="basket-0" position="-1.97153 -0.13449 -23.25223"></a-basket>
       <a-basket id="basket-1" position="26.29567 -0.2163 -32.57229"></a-basket>
       <a-basket id="basket-2" position="60.60882 0 5.57425"></a-basket>
-      <a-basket id="basket-3" position="39.92873 3.18668 53.1009"></a-basket>
+      <a-basket id="basket-3" position="52.76761 5.50301 73.18677"></a-basket>
 
       <a-box
         width="200"
@@ -231,12 +267,18 @@
         radius="660"
         height="20"
       ></a-hill>
-      <a-hill
-        id="hill-4"
-        position="250 0 220"
-        radius="1260"
-        height="35"
-      ></a-hill>
+      <a-box
+        id="slope-0"
+        geometry="height: 20.62; depth: 50; width: 350"
+        static-body="sphereRadius: NaN"
+        position="73.25838 -2.90141 54.80693"
+        width="20"
+        height="20"
+        depth="20"
+        rotation="-20.000237754631645 59.29024559793272 0"
+        material="color:green;"
+        static-body
+      ></a-box>
     </a-scene>
     <div class="gui">
       <div>Power: <span id="gui__power-value">0</span></div>
