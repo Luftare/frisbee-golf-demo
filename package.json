@@ -1,0 +1,23 @@
+{
+  "name": "aframe-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "basket.js",
+  "dependencies": {},
+  "devDependencies": {
+    "aframe-watcher": "^1.4.0"
+  },
+  "scripts": {
+    "start": "aframe-watcher index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Luftare/frisbee-golf-demo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Luftare/frisbee-golf-demo/issues"
+  },
+  "homepage": "https://github.com/Luftare/frisbee-golf-demo#readme"
+}
