@@ -165,7 +165,7 @@ AFRAME.registerComponent('frisbee', {
     if (velocityMagnitude > 1) {
       this.frisbeeTurn.z =
         (currentDisc.fade / 2 + 0.09 * velocityMagnitude * currentDisc.turn) *
-        0.004;
+        0.003;
 
       this.el.body.quaternion.mult(this.frisbeeTurn, this.el.body.quaternion);
 
