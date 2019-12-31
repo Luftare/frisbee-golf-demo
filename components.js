@@ -1,12 +1,12 @@
-$ = (sel) => document.querySelector(sel)
-$$ = (sel) => document.querySelectorAll(sel)
-on = (elem, type, hand) => elem.addEventListener(type, hand)
+$ = sel => document.querySelector(sel);
+$$ = sel => document.querySelectorAll(sel);
+on = (elem, type, hand) => elem.addEventListener(type, hand);
 
 const currentDisc = {
-  speed: 9,// not in use
+  speed: 9, // not in use
   glide: 4,
   turn: -1,
-  fade: 2,
+  fade: 2
 };
 
 function forEach(arr, fn) {
@@ -30,7 +30,7 @@ AFRAME.registerComponent('frisbee', {
     didThrow: { default: false },
     isDamped: { default: false },
     dampFactor: { default: 1 },
-    maxFlightTime: { default: 7000 },
+    maxFlightTime: { default: 7000 }
   },
 
   init() {
@@ -41,13 +41,18 @@ AFRAME.registerComponent('frisbee', {
 
     this.frisbeeTurn = new THREE.Quaternion();
 
+    this.dampDictionary = {
+      terrain: 0.8,
+      basket: 0.65
+    };
+
     this.discInBasketCheckScheduled = false;
     this.landingTimerId;
 
     this.frisbeeMarker = $('#frisbee-marker');
 
-    this.el.addEventListener('throw', (e) => {
-      this.el.body.angularFactor.set(0.5, 1, 0.5)
+    this.el.addEventListener('throw', e => {
+      this.el.body.angularFactor.set(0.5, 1, 0.5);
       this.handleThrow();
     });
 
@@ -55,7 +60,7 @@ AFRAME.registerComponent('frisbee', {
       this.handlePickUp();
     });
 
-    this.el.addEventListener('inside-trigger-zone', (e) => {
+    this.el.addEventListener('inside-trigger-zone', e => {
       this.handleInsideZone(e);
     });
   },
@@ -81,15 +86,16 @@ AFRAME.registerComponent('frisbee', {
 
     this.el.setAttribute('visible', true);
 
-    forEach($$('[frisbee-marker-part]'), (part) => {
+    forEach($$('[frisbee-marker-part]'), part => {
       part.setAttribute('material', 'color', 'yellow');
     });
   },
 
   handleInsideZone(e) {
-    this.data.dampFactor = parseFloat(e.detail.payload);
+    this.data.dampFactor = this.dampDictionary[e.detail.payload] || 1;
     this.data.isDamped = true;
-    const shouldTestIfDiscIsInBasket = !this.data.inBasket && !this.discInBasketCheckScheduled;
+    const shouldTestIfDiscIsInBasket = e.detail.payload === 'basket';
+    !this.data.inBasket && !this.discInBasketCheckScheduled;
 
     if (shouldTestIfDiscIsInBasket) {
       this.discInBasketCheckScheduled = true;
@@ -109,7 +115,7 @@ AFRAME.registerComponent('frisbee', {
     clearTimeout(this.landingTimerId);
     this.el.setAttribute('visible', true);
 
-    forEach($$('[frisbee-marker-part]'), (part) => {
+    forEach($$('[frisbee-marker-part]'), part => {
       part.setAttribute('material', 'color', 'lightgreen');
     });
   },
@@ -157,7 +163,9 @@ AFRAME.registerComponent('frisbee', {
     }
 
     if (velocityMagnitude > 1) {
-      this.frisbeeTurn.z = ((currentDisc.fade / 2) + 0.09 * velocityMagnitude * (currentDisc.turn)) * 0.004;
+      this.frisbeeTurn.z =
+        (currentDisc.fade / 2 + 0.09 * velocityMagnitude * currentDisc.turn) *
+        0.004;
 
       this.el.body.quaternion.mult(this.frisbeeTurn, this.el.body.quaternion);
 
@@ -179,7 +187,7 @@ AFRAME.registerComponent('frisbee-thrower', {
   schema: {
     canThrow: { default: true },
     power: { default: 6 },
-    maxVelocity: { default: 20 },
+    maxVelocity: { default: 20 }
   },
 
   init() {
@@ -192,11 +200,14 @@ AFRAME.registerComponent('frisbee-thrower', {
     this.frisbeeMarker = $('#frisbee-marker');
     this.frisbee = $('[frisbee]');
 
-    this.frisbeeMarker.setAttribute('position', this.el.getAttribute('position'));
+    this.frisbeeMarker.setAttribute(
+      'position',
+      this.el.getAttribute('position')
+    );
 
     $('#gui__power-value').innerHTML = this.data.power;
 
-    window.addEventListener('mousemove', (e) => {
+    window.addEventListener('mousemove', e => {
       if (this.adjustingFrisbeeOrientation) {
         this.frisbeeOrientation.x += e.movementY * 0.001;
         this.frisbeeOrientation.z -= e.movementX * 0.001;
@@ -271,11 +282,20 @@ AFRAME.registerComponent('frisbee-thrower', {
     const markerPosition = this.frisbeeMarker.getAttribute('position');
     const basketPosition = this.basket.getAttribute('position');
 
-    const markerDistanceSq = (markerPosition.x - this.throwerPosition.x) ** 2 + (markerPosition.z - this.throwerPosition.z) ** 2;
-    const basketDistanceSq = (basketPosition.x - this.throwerPosition.x) ** 2 + (basketPosition.z - this.throwerPosition.z) ** 2;
-    const markerBasketDistanceSq = (basketPosition.x - markerPosition.x) ** 2 + (basketPosition.z - markerPosition.z) ** 2;
+    const markerDistanceSq =
+      (markerPosition.x - this.throwerPosition.x) ** 2 +
+      (markerPosition.z - this.throwerPosition.z) ** 2;
+    const basketDistanceSq =
+      (basketPosition.x - this.throwerPosition.x) ** 2 +
+      (basketPosition.z - this.throwerPosition.z) ** 2;
+    const markerBasketDistanceSq =
+      (basketPosition.x - markerPosition.x) ** 2 +
+      (basketPosition.z - markerPosition.z) ** 2;
 
-    return markerDistanceSq <= maxDistanceSq && basketDistanceSq >= markerBasketDistanceSq;
+    return (
+      markerDistanceSq <= maxDistanceSq &&
+      basketDistanceSq >= markerBasketDistanceSq
+    );
   },
 
   tick() {
@@ -300,8 +320,6 @@ AFRAME.registerComponent('frisbee-thrower', {
     discPos.x += toDisc.x;
     discPos.y += toDisc.y - 0.3;
     discPos.z += toDisc.z;
-
-
 
     if (this.shouldThrow) {
       this.throw({ x, y, z });
@@ -339,7 +357,7 @@ AFRAME.registerComponent('forest', {
   schema: {
     count: { default: 10 },
     radius: { default: 20 },
-    type: { default: 'a-oak-tree' },
+    type: { default: 'a-oak-tree' }
   },
   init() {
     const { x, y, z } = this.el.getAttribute('position');
@@ -350,8 +368,8 @@ AFRAME.registerComponent('forest', {
       const treeX = Math.cos(angle) * radius + x;
       const treeZ = Math.sin(angle) * radius + z;
       const el = document.createElement(this.data.type);
-      el.setAttribute('position', { x: treeX, y, z: treeZ })
+      el.setAttribute('position', { x: treeX, y, z: treeZ });
       this.el.sceneEl.appendChild(el);
     });
   }
-})
+});
