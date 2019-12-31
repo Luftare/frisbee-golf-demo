@@ -39,6 +39,10 @@
           id="cloud-model"
           src="assets/cloud/scene.gltf"
         ></a-asset-item>
+        <a-asset-item
+          id="tower-model"
+          src="assets/tower/scene.gltf"
+        ></a-asset-item>
       </a-assets>
 
       <a-entity light="type: ambient; color: #aaa;"></a-entity>
@@ -47,6 +51,24 @@
         position="-10 150 50"
       >
       </a-entity>
+
+      <a-entity
+        id="tower-0"
+        gltf-model="#tower-model"
+        scale="1.45996 1.45996 1.45996"
+        position="35.03777 -0.3 16.05174"
+      ></a-entity>
+      <a-cylinder
+        visible="false"
+        id="tower-collider"
+        geometry="radius: 4.01"
+        static-body="sphereRadius: NaN"
+        position="34.53854 7.08833 16.07856"
+        radius="14"
+        height="20"
+        material="color:red"
+        static-body
+      ></a-cylinder>
 
       <a-cloud
         rotation="0 90 0"
@@ -70,7 +92,7 @@
       <a-oak-tree
         id="oak-2"
         rotation="0 30 0"
-        position="9.72516 -0.70621 -25.56242"
+        position="7.62976 -0.70621 -23.81143"
       ></a-oak-tree>
       <a-oak-tree
         id="oak-3"
@@ -119,6 +141,14 @@
       <a-pine-tree
         id="pine-8"
         position="52.83408 2.67453 59.10648"
+      ></a-pine-tree>
+      <a-pine-tree
+        id="pine-8.0"
+        position="-0.66201 0.12345 -34.06598"
+      ></a-pine-tree>
+      <a-pine-tree
+        id="pine-8.1"
+        position="4.72436 -0.11814 -28.74488"
       ></a-pine-tree>
       <a-pine-tree
         id="pine-9"
