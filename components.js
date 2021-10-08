@@ -230,6 +230,7 @@ AFRAME.registerComponent("frisbee-thrower", {
     this.throwerPosition = new THREE.Vector3();
     this.frisbeeOrientation = new THREE.Quaternion();
     this.adjustingFrisbeeOrientation = false;
+    this.keysDown = {};
 
     this.frisbeeMarker = $("#frisbee-marker");
     this.frisbee = $("[frisbee]");
@@ -249,6 +250,7 @@ AFRAME.registerComponent("frisbee-thrower", {
     });
 
     window.addEventListener("keydown", ({ key }) => {
+      this.keysDown[key.toLowerCase()] = true;
       const num = parseInt(key);
 
       const isNumber = !isNaN(num);
@@ -314,15 +316,23 @@ AFRAME.registerComponent("frisbee-thrower", {
 
         this.adjustingFrisbeeOrientation = true;
       }
+      if (this.keysDown.q) {
+        $("#instructions").hidden = false;
+      }
     });
 
     window.addEventListener("keyup", ({ key }) => {
+      this.keysDown[key.toLowerCase()] = false;
       if (key === "e") {
         this.adjustingFrisbeeOrientation = false;
         const el = $("[look-controls]");
         if (el) {
           el.setAttribute("look-controls", "enabled", true);
         }
+      }
+
+      if (!this.keysDown.q) {
+        $("#instructions").hidden = true;
       }
     });
   },
