@@ -1,13 +1,39 @@
-$ = sel => document.querySelector(sel);
-$$ = sel => document.querySelectorAll(sel);
+$ = (sel) => document.querySelector(sel);
+$$ = (sel) => document.querySelectorAll(sel);
 on = (elem, type, hand) => elem.addEventListener(type, hand);
 
-const currentDisc = {
-  speed: 9, // not in use
-  glide: 4,
-  turn: -1,
-  fade: 2
+const discs = {
+  stableDriver: {
+    label: "Stable Driver",
+    speed: 13,
+    glide: 4,
+    turn: -0.8,
+    fade: 3.5,
+  },
+  unstableDriver: {
+    label: "Unstable Driver",
+    speed: 12,
+    glide: 4,
+    turn: -2,
+    fade: 3,
+  },
+  midrange: {
+    label: "Midrange",
+    speed: 5,
+    glide: 4,
+    turn: 0,
+    fade: 2,
+  },
+  putter: {
+    label: "Putter",
+    speed: 2,
+    glide: 3,
+    turn: 0,
+    fade: 1,
+  },
 };
+
+let currentDisc = discs.stableDriver;
 
 function forEach(arr, fn) {
   for (let index = 0; index < arr.length; index++) {
@@ -23,17 +49,18 @@ function map(arr, fn) {
   return res;
 }
 
-AFRAME.registerComponent('frisbee', {
+AFRAME.registerComponent("frisbee", {
   schema: {
     inBasket: { default: false },
     isLanded: { default: false },
     didThrow: { default: false },
     isDamped: { default: false },
     dampFactor: { default: 1 },
-    maxFlightTime: { default: 7000 }
+    maxFlightTime: { default: 7000 },
   },
 
   init() {
+    $("#gui__disc-label").innerHTML = currentDisc.label;
     this.liftForce = new CANNON.Vec3();
     this.airFrictionForce = new CANNON.Vec3();
     this.discUpNormal = new CANNON.Vec3();
@@ -43,24 +70,24 @@ AFRAME.registerComponent('frisbee', {
 
     this.dampDictionary = {
       terrain: 0.8,
-      basket: 0.65
+      basket: 0.7,
     };
 
     this.discInBasketCheckScheduled = false;
     this.landingTimerId;
 
-    this.frisbeeMarker = $('#frisbee-marker');
+    this.frisbeeMarker = $("#frisbee-marker");
 
-    this.el.addEventListener('throw', e => {
+    this.el.addEventListener("throw", (e) => {
       this.el.body.angularFactor.set(0.5, 1, 0.5);
       this.handleThrow();
     });
 
-    this.el.addEventListener('pick-up', () => {
+    this.el.addEventListener("pick-up", () => {
       this.handlePickUp();
     });
 
-    this.el.addEventListener('inside-trigger-zone', e => {
+    this.el.addEventListener("inside-trigger-zone", (e) => {
       this.handleInsideZone(e);
     });
   },
@@ -69,7 +96,7 @@ AFRAME.registerComponent('frisbee', {
     this.data.didThrow = true;
     this.data.isLanded = false;
 
-    this.frisbeeMarker.setAttribute('visible', false);
+    this.frisbeeMarker.setAttribute("visible", false);
     clearTimeout(this.landingTimerId);
 
     this.landingTimerId = setTimeout(() => {
@@ -84,17 +111,17 @@ AFRAME.registerComponent('frisbee', {
 
     clearTimeout(this.landingTimerId);
 
-    this.el.setAttribute('visible', true);
+    this.el.setAttribute("visible", true);
 
-    forEach($$('[frisbee-marker-part]'), part => {
-      part.setAttribute('material', 'color', 'yellow');
+    forEach($$("[frisbee-marker-part]"), (part) => {
+      part.setAttribute("material", "color", "yellow");
     });
   },
 
   handleInsideZone(e) {
     this.data.dampFactor = this.dampDictionary[e.detail.payload] || 1;
     this.data.isDamped = true;
-    const shouldTestIfDiscIsInBasket = e.detail.payload === 'basket';
+    const shouldTestIfDiscIsInBasket = e.detail.payload === "basket";
     !this.data.inBasket && !this.discInBasketCheckScheduled;
 
     if (shouldTestIfDiscIsInBasket) {
@@ -113,21 +140,21 @@ AFRAME.registerComponent('frisbee', {
 
   handleFrisbeeInBasket() {
     clearTimeout(this.landingTimerId);
-    this.el.setAttribute('visible', true);
+    this.el.setAttribute("visible", true);
 
-    forEach($$('[frisbee-marker-part]'), part => {
-      part.setAttribute('material', 'color', 'lightgreen');
+    forEach($$("[frisbee-marker-part]"), (part) => {
+      part.setAttribute("material", "color", "lightgreen");
     });
   },
 
   handleLanded() {
     clearTimeout(this.landingTimerId);
 
-    this.frisbeeMarker.setAttribute('position', this.el.body.position);
-    this.frisbeeMarker.setAttribute('visible', true);
+    this.frisbeeMarker.setAttribute("position", this.el.body.position);
+    this.frisbeeMarker.setAttribute("visible", true);
 
     if (!this.data.isDamped) {
-      this.el.setAttribute('visible', false);
+      this.el.setAttribute("visible", false);
     }
   },
 
@@ -139,7 +166,10 @@ AFRAME.registerComponent('frisbee', {
     this.el.body.quaternion.vmult(this.discUpNormal, this.discUpNormal);
 
     const velocityMagnitude = this.el.body.velocity.length();
-    const airFrictionMagnitude = -0.05 * velocityMagnitude ** 2;
+    const discSpeedFrictionFactor =
+      (9 + (1 - currentDisc.speed / 9) * 2.0) * 0.1;
+    const airFrictionMagnitude =
+      -0.05 * discSpeedFrictionFactor * velocityMagnitude ** 2;
 
     this.airFrictionForce.copy(this.el.body.velocity);
     this.airFrictionForce.normalize();
@@ -163,8 +193,12 @@ AFRAME.registerComponent('frisbee', {
     }
 
     if (velocityMagnitude > 1) {
+      const fadeSpeedFactor = currentDisc.speed / 10;
+      const isOverTurnSpeed = velocityMagnitude > currentDisc.speed * 1.5;
+      const turnSpeedFactor = isOverTurnSpeed ? 2.0 : 1;
       this.frisbeeTurn.z =
-        (currentDisc.fade / 2 + 0.09 * velocityMagnitude * currentDisc.turn) *
+        ((fadeSpeedFactor * 0.4 * currentDisc.fade) / 2 +
+          0.07 * velocityMagnitude * currentDisc.turn * 0.5 * turnSpeedFactor) *
         0.003;
 
       this.el.body.quaternion.mult(this.frisbeeTurn, this.el.body.quaternion);
@@ -178,16 +212,16 @@ AFRAME.registerComponent('frisbee', {
 
     this.data.dampFactor = 1;
     this.data.isDamped = false;
-  }
+  },
 });
 
-AFRAME.registerComponent('frisbee-thrower', {
-  dependencies: ['frisbee', 'frisbee-marker'],
+AFRAME.registerComponent("frisbee-thrower", {
+  dependencies: ["frisbee", "frisbee-marker"],
 
   schema: {
     canThrow: { default: true },
     power: { default: 6 },
-    maxVelocity: { default: 20 }
+    maxVelocity: { default: 22 },
   },
 
   init() {
@@ -197,80 +231,97 @@ AFRAME.registerComponent('frisbee-thrower', {
     this.frisbeeOrientation = new THREE.Quaternion();
     this.adjustingFrisbeeOrientation = false;
 
-    this.frisbeeMarker = $('#frisbee-marker');
-    this.frisbee = $('[frisbee]');
+    this.frisbeeMarker = $("#frisbee-marker");
+    this.frisbee = $("[frisbee]");
 
     this.frisbeeMarker.setAttribute(
-      'position',
-      this.el.getAttribute('position')
+      "position",
+      this.el.getAttribute("position")
     );
 
-    $('#gui__power-value').innerHTML = this.data.power;
+    $("#gui__power-value").innerHTML = this.data.power;
 
-    window.addEventListener('mousemove', e => {
+    window.addEventListener("mousemove", (e) => {
       if (this.adjustingFrisbeeOrientation) {
         this.frisbeeOrientation.x += e.movementY * 0.001;
         this.frisbeeOrientation.z -= e.movementX * 0.001;
       }
     });
 
-    window.addEventListener('keydown', ({ key }) => {
+    window.addEventListener("keydown", ({ key }) => {
       const num = parseInt(key);
 
       const isNumber = !isNaN(num);
       if (isNumber) {
         const parsedNumber = num === 0 ? 10 : num;
         this.data.power = parsedNumber;
-        $('#gui__power-value').innerHTML = parsedNumber;
+        $("#gui__power-value").innerHTML = parsedNumber;
       }
 
-      if (key === ' ') {
+      if (key === " ") {
         this.shouldThrow = true;
-        this.frisbee.dispatchEvent(new CustomEvent('throw'));
+        this.frisbee.dispatchEvent(new CustomEvent("throw"));
       }
-      if (key === 'r') {
+      if (key === "r") {
         if (!this.didThrow) {
           this.frisbeeOrientation.z = 0;
           this.frisbeeOrientation.x = 0;
         }
 
-        this.frisbeeMarker.setAttribute('visible', true); // REMOVE THIS TO DISABLE FREE THROWING
-        this.frisbeeMarker.setAttribute('position', this.throwerPosition); // REMOVE THIS TO DISABLE FREE THROWING
+        this.frisbeeMarker.setAttribute("visible", true); // REMOVE THIS TO DISABLE FREE THROWING
+        this.frisbeeMarker.setAttribute("position", this.throwerPosition); // REMOVE THIS TO DISABLE FREE THROWING
         this.shouldThrow = false;
         this.didThrow = false;
 
-        this.frisbee.dispatchEvent(new CustomEvent('pick-up'));
+        this.frisbee.dispatchEvent(new CustomEvent("pick-up"));
       }
-      if (key === 'i') {
+      if (key === "i") {
         this.frisbeeOrientation.x -= 0.1;
       }
-      if (key === 'k') {
+      if (key === "k") {
         this.frisbeeOrientation.x += 0.1;
       }
-      if (key === 'j') {
+      if (key === "j") {
         this.frisbeeOrientation.z += 0.1;
       }
-      if (key === 'l') {
+      if (key === "l") {
         this.frisbeeOrientation.z -= 0.1;
       }
 
-      if (key === 'e') {
-        const el = $('[look-controls]');
+      if (key === "z") {
+        currentDisc = discs.stableDriver;
+      }
+
+      if (key === "x") {
+        currentDisc = discs.unstableDriver;
+      }
+
+      if (key === "c") {
+        currentDisc = discs.midrange;
+      }
+
+      if (key === "v") {
+        currentDisc = discs.putter;
+      }
+      $("#gui__disc-label").innerHTML = currentDisc.label;
+
+      if (key === "e") {
+        const el = $("[look-controls]");
 
         if (el) {
-          el.setAttribute('look-controls', 'enabled', false);
+          el.setAttribute("look-controls", "enabled", false);
         }
 
         this.adjustingFrisbeeOrientation = true;
       }
     });
 
-    window.addEventListener('keyup', ({ key }) => {
-      if (key === 'e') {
+    window.addEventListener("keyup", ({ key }) => {
+      if (key === "e") {
         this.adjustingFrisbeeOrientation = false;
-        const el = $('[look-controls]');
+        const el = $("[look-controls]");
         if (el) {
-          el.setAttribute('look-controls', 'enabled', true);
+          el.setAttribute("look-controls", "enabled", true);
         }
       }
     });
@@ -279,8 +330,8 @@ AFRAME.registerComponent('frisbee-thrower', {
   isAtFrisbeeMarker() {
     if (!this.frisbeeMarker || !this.basket) return false;
     const maxDistanceSq = 2 ** 2;
-    const markerPosition = this.frisbeeMarker.getAttribute('position');
-    const basketPosition = this.basket.getAttribute('position');
+    const markerPosition = this.frisbeeMarker.getAttribute("position");
+    const basketPosition = this.basket.getAttribute("position");
 
     const markerDistanceSq =
       (markerPosition.x - this.throwerPosition.x) ** 2 +
@@ -334,7 +385,7 @@ AFRAME.registerComponent('frisbee-thrower', {
 
   getThrowVelocity() {
     const normalizedPower = this.data.power / 10;
-    const weightedPower = normalizedPower ** 0.7;
+    const weightedPower = normalizedPower ** 0.6;
     return weightedPower * this.data.maxVelocity;
   },
 
@@ -349,18 +400,18 @@ AFRAME.registerComponent('frisbee-thrower', {
     body.velocity.x = velocity.x;
     body.velocity.y = velocity.y;
     body.velocity.z = velocity.z;
-  }
+  },
 });
 
-AFRAME.registerComponent('forest', {
+AFRAME.registerComponent("forest", {
   multiple: true,
   schema: {
     count: { default: 10 },
     radius: { default: 20 },
-    type: { default: 'a-oak-tree' }
+    type: { default: "a-oak-tree" },
   },
   init() {
-    const { x, y, z } = this.el.getAttribute('position');
+    const { x, y, z } = this.el.getAttribute("position");
 
     [...Array(this.data.count)].forEach(() => {
       const radius = Math.random() * this.data.radius;
@@ -368,8 +419,8 @@ AFRAME.registerComponent('forest', {
       const treeX = Math.cos(angle) * radius + x;
       const treeZ = Math.sin(angle) * radius + z;
       const el = document.createElement(this.data.type);
-      el.setAttribute('position', { x: treeX, y, z: treeZ });
+      el.setAttribute("position", { x: treeX, y, z: treeZ });
       this.el.sceneEl.appendChild(el);
     });
-  }
+  },
 });
