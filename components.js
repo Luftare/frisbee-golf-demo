@@ -5,6 +5,7 @@ on = (elem, type, hand) => elem.addEventListener(type, hand);
 const discs = {
   stableDriver: {
     label: "Stable Driver",
+    color: "#c0f",
     speed: 13,
     glide: 4,
     turn: -0.8,
@@ -12,6 +13,7 @@ const discs = {
   },
   unstableDriver: {
     label: "Unstable Driver",
+    color: "#f52",
     speed: 12,
     glide: 4,
     turn: -2,
@@ -19,6 +21,7 @@ const discs = {
   },
   midrange: {
     label: "Midrange",
+    color: "#2fa",
     speed: 5,
     glide: 4,
     turn: 0,
@@ -26,6 +29,7 @@ const discs = {
   },
   putter: {
     label: "Putter",
+    color: "#755",
     speed: 2,
     glide: 3,
     turn: 0,
@@ -61,6 +65,7 @@ AFRAME.registerComponent("frisbee", {
 
   init() {
     $("#gui__disc-label").innerHTML = currentDisc.label;
+    $("[frisbee]").setAttribute("material", "color", currentDisc.color);
     this.liftForce = new CANNON.Vec3();
     this.airFrictionForce = new CANNON.Vec3();
     this.discUpNormal = new CANNON.Vec3();
@@ -292,18 +297,22 @@ AFRAME.registerComponent("frisbee-thrower", {
 
       if (key === "z") {
         currentDisc = discs.stableDriver;
+        $("[frisbee]").setAttribute("material", "color", currentDisc.color);
       }
 
       if (key === "x") {
         currentDisc = discs.unstableDriver;
+        $("[frisbee]").setAttribute("material", "color", currentDisc.color);
       }
 
       if (key === "c") {
         currentDisc = discs.midrange;
+        $("[frisbee]").setAttribute("material", "color", currentDisc.color);
       }
 
       if (key === "v") {
         currentDisc = discs.putter;
+        $("[frisbee]").setAttribute("material", "color", currentDisc.color);
       }
       $("#gui__disc-label").innerHTML = currentDisc.label;
 
